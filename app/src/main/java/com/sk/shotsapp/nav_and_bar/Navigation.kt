@@ -1,26 +1,24 @@
-package com.sk.shotsapp.screens
+package com.sk.shotsapp.nav_and_bar
 
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.sk.shotsapp.nav_and_bar.BottomNavBar
-import com.sk.shotsapp.nav_and_bar.NavigationItem
-import com.sk.shotsapp.nav_and_bar.TopBar
-import kotlinx.coroutines.delay
+import com.sk.shotsapp.screens.*
 
 @Composable
-fun MainScreen() {
+fun Navigation() {
     val darkTheme = isSystemInDarkTheme()
     val navController = rememberNavController()
     Scaffold(
         bottomBar = { BottomNavBar(navController = navController) },
         topBar = { TopBar(navController = navController) },
-        backgroundColor = MaterialTheme.colors.primary,
+        backgroundColor = colors.primary,
     ) {
+
         NavHost(navController = navController, startDestination = "splash") {
             composable("splash") { SplashScreen(navController = navController) }
             composable(NavigationItem.Home.route) { HomeScreen(darkTheme = darkTheme) }

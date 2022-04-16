@@ -10,7 +10,7 @@ import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.sk.shotsapp.screens.MainScreen
+import com.sk.shotsapp.nav_and_bar.Navigation
 import com.sk.shotsapp.ui.theme.SHOTScomposeTheme
 
 class MainActivity : ComponentActivity() {
@@ -23,7 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    MainScreen()
+                    Navigation()
                 }
             }
         }
@@ -37,6 +37,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     SHOTScomposeTheme {
-        MainScreen()
+        Navigation()
     }
 }
