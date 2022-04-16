@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.sk.shotsapp.nav_and_bar.BottomNavBar
 import com.sk.shotsapp.nav_and_bar.NavigationItem
 import com.sk.shotsapp.nav_and_bar.TopBar
+import kotlinx.coroutines.delay
 
 @Composable
 fun MainScreen() {
@@ -27,7 +28,6 @@ fun MainScreen() {
             composable(NavigationItem.Event.route) { EventScreen(darkTheme = darkTheme) }
             composable("profile") { ProfileScreen(darkTheme = darkTheme) }
             composable("settings") { SettingScreen(darkTheme = darkTheme) }
-            /*...*/
         }
     }
 }
