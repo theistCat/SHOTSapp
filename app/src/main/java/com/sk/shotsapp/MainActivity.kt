@@ -24,10 +24,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.sk.shotsapp.nav_and_bar.NavigationEnum
 import com.sk.shotsapp.screens.EmailLoginScreen
 import com.sk.shotsapp.screens.LoginScreen
-import com.sk.shotsapp.screens.ProfileScreen
 import com.sk.shotsapp.screens.WelcomeScreen
 import com.sk.shotsapp.ui.theme.SHOTScomposeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -44,12 +44,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    ProfileScreen()
+                    StartApp()
                     loginViewModel.test()
                 }
             }
         }
     }
+}
+
+@Composable
+fun StartApp(){
+    val navController = rememberNavController()
+    NavigateBetweenScreen(navController = navController)
 }
 
 @Composable
@@ -109,6 +115,6 @@ fun welcomePage(builder: NavGraphBuilder, loginViewModel: AppViewModel) {
 @Composable
 fun DefaultPreview() {
     SHOTScomposeTheme {
-
+        StartApp()
     }
 }

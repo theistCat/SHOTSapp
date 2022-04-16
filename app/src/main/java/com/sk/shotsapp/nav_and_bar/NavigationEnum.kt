@@ -4,15 +4,9 @@ import androidx.compose.runtime.State
 import com.sk.shotsapp.R
 
 enum class NavigationEnum constructor(val title: Int) {
-    Login(
-        title = R.string.login
-    ),
-    EmailLogin(
-        title = R.string.sign_in_with_email
-    ),
-    Welcome(
-        title = R.string.welcome
-    );
+    Login(title = R.string.login),
+    EmailLogin(title = R.string.sign_in_with_email),
+    Welcome(title = R.string.welcome);
 
     companion object {
         fun fromRoute(route: String?, isLoggedIn: State<Boolean>): NavigationEnum {
