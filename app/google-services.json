@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "613841600443",
+    "project_id": "projectmeetme-340603",
+    "storage_bucket": "projectmeetme-340603.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:613841600443:android:de097572c6732f7e8cce9e",
+        "android_client_info": {
+          "package_name": "com.sk.shotsapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "613841600443-tbp54sqdd854u422i7g8kfnnaci9og8t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sk.shotsapp",
+            "certificate_hash": "87c8dc976df917d39894f0a4b941aa2bbd831575"
+          }
+        },
+        {
+          "client_id": "613841600443-h95506m95khe6j4amq2pem4os8dua8uj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZe4U_lPHog7qTMpnUkbIlZF0pBrdhbNs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "613841600443-h95506m95khe6j4amq2pem4os8dua8uj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
