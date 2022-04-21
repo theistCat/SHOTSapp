@@ -6,26 +6,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.sk.shotsapp.nav_and_bar.NavigationEnum
 import com.sk.shotsapp.screens.EmailLoginScreen
 import com.sk.shotsapp.screens.LoginScreen
 import com.sk.shotsapp.screens.WelcomeScreen
@@ -44,7 +33,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    StartApp()
+                    NaviG(loginViewModel)
                     loginViewModel.test()
                 }
             }
@@ -53,61 +42,73 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun StartApp(){
+fun Profile(loginViewModel: AppViewModel) {
     val navController = rememberNavController()
-    NavigateBetweenScreen(navController = navController)
+    NavigateBetweenScreen(navController = navController, loginViewModel = loginViewModel)
 }
 
 @Composable
 fun NavigateBetweenScreen(
     navController: NavHostController,
-    loginViewModel: AppViewModel = hiltViewModel()
-) {
-    val startDestination =
-        if (loginViewModel.isLoggedIn.value) NavigationEnum.Welcome.name else NavigationEnum.Login.name
-
-    NavHost(navController = navController, startDestination = startDestination) {
-        loginPage(this, navController, loginViewModel)
-        emailLoginPage(this, loginViewModel)
-        welcomePage(this, loginViewModel)
-    }
-}
-
-@Composable
-fun NavigateBackButton(navController: NavController) {
-    IconButton(onClick = { navController.popBackStack() },
-        modifier = Modifier.semantics { contentDescription = "back button" }) {
-
-        Icon(Icons.Filled.ArrowBack, stringResource(R.string.back_icon))
-    }
-}
-
-fun loginPage(
-    builder: NavGraphBuilder,
-    navController: NavController,
     loginViewModel: AppViewModel
 ) {
-    builder.composable(route = NavigationEnum.Login.name) {
-        loginViewModel.setError("")
-        LoginScreen(
-            emailLoginClick = { navController.navigate(NavigationEnum.EmailLogin.name) },
-            viewModel = loginViewModel
-        )
+    val startDestination =
+        if (loginViewModel.isLoggedIn.value) "Welcome" else "Login"
+//        if (loginViewModel.isLoggedIn.value) NavigationEnum.Welcome.name else NavigationEnum.Login.name
+
+    NavHost(navController = navController, startDestination = startDestination) {
+        composable(route = "Login") {
+            loginViewModel.setError("")
+            LoginScreen(
+                emailLoginClick = { navController.navigate("Sign in with Google") },
+                viewModel = loginViewModel
+            )
+        }
+//        loginPage(this, navController, loginViewModel)
+        composable(route = "Sign in with Google") {
+            loginViewModel.setError("")
+            EmailLoginScreen(loginViewModel)
+        }
+//        emailLoginPage(this, loginViewModel)
+        composable(route = "Welcome") { WelcomeScreen(loginViewModel) }
+//        welcomePage(this, loginViewModel)
     }
 }
 
-fun emailLoginPage(builder: NavGraphBuilder, loginViewModel: AppViewModel) {
-    builder.composable(route = NavigationEnum.EmailLogin.name) {
-        loginViewModel.setError("")
-        EmailLoginScreen(loginViewModel)
-    }
-}
+//@Composable
+//fun NavigateBackButton(navController: NavController) {
+//    IconButton(onClick = { navController.popBackStack() },
+//        modifier = Modifier.semantics { contentDescription = "back button" }) {
+//
+//        Icon(Icons.Filled.ArrowBack, stringResource(R.string.back_icon))
+//    }
+//}
 
-fun welcomePage(builder: NavGraphBuilder, loginViewModel: AppViewModel) {
-    builder.composable(route = NavigationEnum.Welcome.name) {
-        WelcomeScreen(loginViewModel)
-    }
-}
+//fun loginPage(
+//    builder: NavGraphBuilder,
+//    navController: NavController,
+//    loginViewModel: AppViewModel
+//) {
+////    builder.composable(route = NavigationEnum.Login.name) {
+//    builder.composable(route = "Login") {
+//        loginViewModel.setError("")
+//        LoginScreen(
+//            emailLoginClick = { navController.navigate("Sign in with Google") },
+//            viewModel = loginViewModel
+//        )
+//    }
+//}
+
+//fun emailLoginPage(builder: NavGraphBuilder, loginViewModel: AppViewModel) {
+//    builder.composable(route = "Sign in with Google") {
+//        loginViewModel.setError("")
+//        EmailLoginScreen(loginViewModel)
+//    }
+//}
+
+//fun welcomePage(builder: NavGraphBuilder, loginViewModel: AppViewModel) {
+//    builder.composable(route = "Welcome") { WelcomeScreen(loginViewModel) }
+//}
 
 // Previews
 @Preview(name = "Dark Mode", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
@@ -115,6 +116,6 @@ fun welcomePage(builder: NavGraphBuilder, loginViewModel: AppViewModel) {
 @Composable
 fun DefaultPreview() {
     SHOTScomposeTheme {
-        StartApp()
+        //
     }
 }
