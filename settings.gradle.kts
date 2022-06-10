@@ -13,4 +13,4 @@ dependencyResolutionManagement {
     }
 }
 rootProject.name = "SHOTScompose"
-include ':app'
+include (":app")

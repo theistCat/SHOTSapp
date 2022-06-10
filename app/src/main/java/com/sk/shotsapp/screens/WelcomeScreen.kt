@@ -1,24 +1,27 @@
 package com.sk.shotsapp.screens
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.google.firebase.auth.FirebaseUser
+import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
+import com.sk.shotsapp.Screen
 
 @Composable
 fun WelcomeScreen(viewModel: AppViewModel) {
@@ -27,14 +30,20 @@ fun WelcomeScreen(viewModel: AppViewModel) {
             .padding(top = 8.dp)
     ) {
         WelcomeText()
-        LogoutButton(viewModel)
+//        LogoutButton(viewModel)
     }
 }
 
 @Composable
 fun WelcomeText() {
     Text(
-        text = "${stringResource(R.string.welcome_logged_in)}\n${Firebase.auth.currentUser?.displayName}",
+        text = "${stringResource(R.string.welcome_logged_in)}\n" +
+                "${
+                    if (FirebaseAuth.getInstance().currentUser?.displayName != null)
+                        Firebase.auth.currentUser?.displayName
+                    else
+                        Firebase.auth.currentUser?.email?.dropLast(10)
+                }",
         modifier = Modifier.fillMaxWidth(),
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.h4
@@ -43,15 +52,23 @@ fun WelcomeText() {
 
 
 @Composable
-fun LogoutButton(viewModel: AppViewModel) {
+fun LogoutButton(viewModel: AppViewModel, navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = { viewModel.signOut() }) {
-            Text(text = stringResource(R.string.log_out))
+        Button(onClick = {
+            viewModel.signOut()
+            navController.navigate("profile")
+        }) {
+            Text(
+                text = stringResource(R.string.log_out),
+                modifier = Modifier.padding(end = 4.dp),
+                fontSize = 20.sp
+            )
+            Icon(painter = painterResource(id = R.drawable.ic_exit), contentDescription = null)
         }
     }
 }

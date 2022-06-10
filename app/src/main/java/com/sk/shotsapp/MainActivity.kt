@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -42,12 +43,6 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Profile(loginViewModel: AppViewModel) {
-    val navController = rememberNavController()
-    NavigateBetweenScreen(navController = navController, loginViewModel = loginViewModel)
-}
-
-@Composable
 fun NavigateBetweenScreen(
     navController: NavHostController,
     loginViewModel: AppViewModel
@@ -75,6 +70,7 @@ fun NavigateBetweenScreen(
     }
 }
 
+/*
 //@Composable
 //fun NavigateBackButton(navController: NavController) {
 //    IconButton(onClick = { navController.popBackStack() },
@@ -110,6 +106,8 @@ fun NavigateBetweenScreen(
 //    builder.composable(route = "Welcome") { WelcomeScreen(loginViewModel) }
 //}
 
+
+ */
 // Previews
 @Preview(name = "Dark Mode", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
 @Preview(name = "Light Mode")
@@ -119,3 +117,4 @@ fun DefaultPreview() {
         //
     }
 }
+

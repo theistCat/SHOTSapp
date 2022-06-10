@@ -25,8 +25,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.sk.shotsapp.screens.EventScreen
-import com.sk.shotsapp.screens.HomeScreen
+import com.sk.shotsapp.screens.*
 
 @Composable
 fun NaviG(viewModel: AppViewModel) {
@@ -34,9 +33,12 @@ fun NaviG(viewModel: AppViewModel) {
     val items = listOf(
         Screen.Home,
         Screen.Events,
+        Screen.Create,
+        Screen.Chat,
+        Screen.Profile
     )
     Scaffold(
-        topBar = { RoundedProfileIcon(navControllerMain = navControllerMain) },
+//        topBar = { RoundedProfileIcon(navControllerMain = navControllerMain) },
         bottomBar = {
             BottomNavigation {
                 val navBackStackEntry by navControllerMain.currentBackStackEntryAsState()
@@ -76,27 +78,13 @@ fun NaviG(viewModel: AppViewModel) {
             startDestination = "home",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("profile") { Profile(viewModel) }
+            composable("profile") { Profile(viewModel, navControllerMain) }
             composable("home") { HomeScreen() }
             composable("events") { EventScreen() }
+            composable("chat") { ChatScreen() }
+            composable("create") { }
+            composable("settings") { SettingScreen(viewModel, navControllerMain) }
             /*...*/
         }
-    }
-}
-
-@Composable
-fun RoundedProfileIcon(navControllerMain: NavController) {
-    Box(modifier = Modifier.fillMaxWidth()) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_launcher_foreground),
-            contentDescription = "Profile Icon",
-            modifier = Modifier
-                .padding(top = 16.dp, end = 16.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .border(BorderStroke(2.dp, Color.Magenta), shape = CircleShape)
-                .align(Alignment.CenterEnd)
-                .clickable { navControllerMain.navigate("profile") }
-        )
     }
 }
