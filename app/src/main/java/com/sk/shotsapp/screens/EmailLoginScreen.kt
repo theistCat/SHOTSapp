@@ -16,7 +16,9 @@ import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 
 @Composable
-fun EmailLoginScreen(viewModel: AppViewModel) {
+fun EmailLoginScreen(
+    viewModel: AppViewModel
+) {
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())

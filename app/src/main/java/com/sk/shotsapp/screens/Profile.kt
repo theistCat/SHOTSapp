@@ -1,17 +1,19 @@
 package com.sk.shotsapp.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Icon
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -27,6 +29,7 @@ fun Profile(loginViewModel: AppViewModel, navControllerMain: NavController) {
     ) {
         val navController = rememberNavController()
         NavigateBetweenScreen(navController = navController, loginViewModel = loginViewModel)
+        print(it)
     }
 }
 
@@ -34,7 +37,7 @@ fun Profile(loginViewModel: AppViewModel, navControllerMain: NavController) {
 @Composable
 fun SettingsIcon(navControllerMain: NavController) {
     Box(modifier = Modifier.fillMaxWidth()) {
-        Image(
+        Icon(
             painter = painterResource(id = R.drawable.ic_settings),
             contentDescription = "Profile Icon",
             modifier = Modifier
@@ -43,7 +46,8 @@ fun SettingsIcon(navControllerMain: NavController) {
                 .clip(CircleShape)
 //                .border(BorderStroke(2.dp, Color.Magenta), shape = CircleShape)
                 .align(Alignment.CenterEnd)
-                .clickable { navControllerMain.navigate("settings") }
+                .clickable { navControllerMain.navigate("settings") },
+            tint = if (isSystemInDarkTheme()) Color.White else Color.Black
         )
     }
 }

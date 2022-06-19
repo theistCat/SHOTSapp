@@ -35,7 +35,10 @@ import com.sk.shotsapp.R
 private const val TAG = "LoginScreen"
 
 @Composable
-fun LoginScreen(emailLoginClick: () -> Unit, viewModel: AppViewModel = hiltViewModel()) {
+fun LoginScreen(
+    emailLoginClick: () -> Unit,
+    viewModel: AppViewModel
+) {
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -79,7 +82,7 @@ fun SignInWithEmailButton(buttonWidth: Dp, emailLoginClick: () -> Unit) {
         )
     ) {
         SignInButtonRow(
-            iconId = R.drawable.ic_home,
+            iconId = R.drawable.ic_email,
             buttonTextId = R.string.sign_in_with_email
         )
     }
@@ -109,7 +112,7 @@ fun SignInWithGoogleButton(buttonWidth: Dp, viewModel: AppViewModel) {
         }
     ) {
         SignInButtonRow(
-            iconId = R.drawable.ic_menu,
+            iconId = R.drawable.ic_google,
             buttonTextId = R.string.sign_in_with_google
         )
     }

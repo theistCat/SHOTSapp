@@ -108,13 +108,5 @@ fun NavigateBetweenScreen(
 
 
  */
-// Previews
-@Preview(name = "Dark Mode", uiMode = UI_MODE_NIGHT_YES, showBackground = true)
-@Preview(name = "Light Mode")
-@Composable
-fun DefaultPreview() {
-    SHOTScomposeTheme {
-        //
-    }
-}
+
 

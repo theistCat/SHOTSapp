@@ -64,7 +64,7 @@ fun LogoutButton(viewModel: AppViewModel, navController: NavController) {
             navController.navigate("profile")
         }) {
             Text(
-                text = stringResource(R.string.log_out),
+                text = if (viewModel.isLoggedIn.value){stringResource(R.string.log_out)} else {"back"},
                 modifier = Modifier.padding(end = 4.dp),
                 fontSize = 20.sp
             )
