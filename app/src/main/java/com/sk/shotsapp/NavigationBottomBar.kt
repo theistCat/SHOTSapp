@@ -33,14 +33,15 @@ fun NaviG(viewModel: AppViewModel) {
     val items = listOf(
         Screen.Home,
         Screen.Events,
-        Screen.Create,
         Screen.Chat,
         Screen.Profile
     )
     Scaffold(
 //        topBar = { RoundedProfileIcon(navControllerMain = navControllerMain) },
         bottomBar = {
-            BottomNavigation {
+            BottomNavigation(
+                backgroundColor = Color.White
+            ) {
                 val navBackStackEntry by navControllerMain.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
                 items.forEach { screen ->
@@ -79,10 +80,10 @@ fun NaviG(viewModel: AppViewModel) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("profile") { Profile(viewModel, navControllerMain) }
-            composable("home") { HomeScreen() }
+            composable("home") { HomeScreen(navControllerMain) }
             composable("events") { EventScreen() }
             composable("chat") { ChatScreen() }
-            composable("create") { }
+            composable("create") { CreateNew() }
             composable("settings") { SettingScreen(viewModel, navControllerMain) }
             /*...*/
         }

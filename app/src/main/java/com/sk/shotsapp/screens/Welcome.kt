@@ -3,6 +3,7 @@ package com.sk.shotsapp.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
@@ -21,7 +22,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
-import com.sk.shotsapp.Screen
 
 @Composable
 fun WelcomeScreen(viewModel: AppViewModel) {
@@ -37,14 +37,16 @@ fun WelcomeScreen(viewModel: AppViewModel) {
 @Composable
 fun WelcomeText() {
     Text(
-        text = "${stringResource(R.string.welcome_logged_in)}\n" +
+        text = "${stringResource(R.string.welcome_logged_in)}  " +
                 "${
                     if (FirebaseAuth.getInstance().currentUser?.displayName != null)
                         Firebase.auth.currentUser?.displayName
                     else
                         Firebase.auth.currentUser?.email?.dropLast(10)
                 }",
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .wrapContentWidth()
+            .padding(8.dp),
         textAlign = TextAlign.Center,
         style = MaterialTheme.typography.h4
     )
@@ -64,7 +66,11 @@ fun LogoutButton(viewModel: AppViewModel, navController: NavController) {
             navController.navigate("profile")
         }) {
             Text(
-                text = if (viewModel.isLoggedIn.value){stringResource(R.string.log_out)} else {"back"},
+                text = if (viewModel.isLoggedIn.value) {
+                    stringResource(R.string.log_out)
+                } else {
+                    "back"
+                },
                 modifier = Modifier.padding(end = 4.dp),
                 fontSize = 20.sp
             )

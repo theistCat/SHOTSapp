@@ -21,9 +21,10 @@ fun EmailLoginScreen(
 ) {
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
+//            .verticalScroll(rememberScrollState())
             .padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 24.dp)
-            .fillMaxSize(),
+//            .fillMaxSize(),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(18.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

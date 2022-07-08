@@ -16,5 +16,5 @@
     <!-- Welcome screen -->
     <string name="welcome">Welcome</string>
     <string name="log_out">Log out</string>
-    <string name="welcome_logged_in">Welcome! You\'re logged in!</string>
+    <string name="welcome_logged_in">Welcome!</string>
 </resources>

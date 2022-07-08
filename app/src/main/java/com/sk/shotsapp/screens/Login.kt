@@ -25,7 +25,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
@@ -36,7 +35,7 @@ private const val TAG = "LoginScreen"
 
 @Composable
 fun LoginScreen(
-    emailLoginClick: () -> Unit,
+//    emailLoginClick: () -> Unit,
     viewModel: AppViewModel
 ) {
     Column(
@@ -54,7 +53,8 @@ fun LoginScreen(
         if (viewModel.error.value.isNotBlank()) {
             ErrorField(viewModel)
         }
-        SignInWithEmailButton(buttonWidth, emailLoginClick)
+        EmailLoginScreen(viewModel = viewModel)
+//        SignInWithEmailButton(buttonWidth, emailLoginClick)
         SignInWithGoogleButton(buttonWidth, viewModel)
     }
 }
@@ -71,22 +71,22 @@ fun ErrorField(viewModel: AppViewModel) {
 }
 
 
-@Composable
-fun SignInWithEmailButton(buttonWidth: Dp, emailLoginClick: () -> Unit) {
-    OutlinedButton(
-        onClick = { emailLoginClick() },
-        modifier = Modifier.width(buttonWidth),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.Gray,
-            contentColor = colorResource(R.color.white)
-        )
-    ) {
-        SignInButtonRow(
-            iconId = R.drawable.ic_email,
-            buttonTextId = R.string.sign_in_with_email
-        )
-    }
-}
+//@Composable
+//fun SignInWithEmailButton(buttonWidth: Dp, emailLoginClick: () -> Unit) {
+//    OutlinedButton(
+//        onClick = { emailLoginClick() },
+//        modifier = Modifier.width(buttonWidth),
+//        colors = ButtonDefaults.buttonColors(
+//            backgroundColor = Color.Gray,
+//            contentColor = colorResource(R.color.white)
+//        )
+//    ) {
+//        SignInButtonRow(
+//            iconId = R.drawable.ic_email,
+//            buttonTextId = R.string.sign_in_with_email
+//        )
+//    }
+//}
 
 @Composable
 fun SignInWithGoogleButton(buttonWidth: Dp, viewModel: AppViewModel) {

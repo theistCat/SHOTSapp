@@ -7,6 +7,5 @@ import com.sk.shotsapp.AppViewModel
 
 @Composable
 fun SettingScreen(viewModel: AppViewModel, navController: NavController) {
-    Text(text = "Settings")
     LogoutButton(viewModel, navController)
 }

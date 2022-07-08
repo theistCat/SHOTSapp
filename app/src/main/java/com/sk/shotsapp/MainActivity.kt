@@ -55,7 +55,7 @@ fun NavigateBetweenScreen(
         composable(route = "Login") {
             loginViewModel.setError("")
             LoginScreen(
-                emailLoginClick = { navController.navigate("Sign in with Google") },
+//                emailLoginClick = { navController.navigate("Sign in with Google") },
                 viewModel = loginViewModel
             )
         }

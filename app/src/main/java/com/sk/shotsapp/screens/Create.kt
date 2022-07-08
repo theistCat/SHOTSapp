@@ -5,8 +5,8 @@ import androidx.compose.runtime.Composable
 import com.sk.shotsapp.Screen
 
 @Composable
-fun ChatScreen() {
-    Scaffold(topBar = { Title(Screen.Chat.label) }) {
+fun CreateNew() {
+    Scaffold(topBar = { Title(whichScreen = Screen.Create.label) }) {
 
         print(it)
     }
