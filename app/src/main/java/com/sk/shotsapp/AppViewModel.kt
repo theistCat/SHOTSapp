@@ -123,4 +123,10 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
     private val _doc = mutableListOf<String>()
     val doc: MutableList<String> = _doc
 
+    private val _nn = String()
+    var nn: String = _nn
+
+    private val _dd = String()
+    var dd: String = _dd
+
 }

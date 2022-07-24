@@ -4,31 +4,36 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Button
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.Screen
 
-@Preview
+
 @Composable
-fun CreateNew() {
+fun CreateNew(viewModel: AppViewModel) {
     Scaffold(topBar = { Title(whichScreen = Screen.Create.label) }) {
         val db = Firebase.firestore
+
         Column {
+
+            NameOfEvent(viewModel = viewModel)
+            DescriptionOfEvent(viewModel = viewModel)
+
             Button(
                 onClick = {// Create a new user with a first, middle, and last name
-                    val user = hashMapOf(
-                        "name" to "gulyat",
-                        "type" to "free",
-                        "gde" to "tashkent",
-                        "kogda" to 1400
+                    val event = hashMapOf(
+                        "name" to viewModel.nn,
+                        "description" to viewModel.dd
                     )
 
-                    db.collection("users")
-                        .add(user)
+                    db.collection("events")
+                        .add(event)
                         .addOnSuccessListener { documentReference ->
                             Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
                         }
@@ -40,45 +45,56 @@ fun CreateNew() {
 
             }
 
-            Button(onClick = {
-                db.collection("users")
-                    .get()
-                    .addOnSuccessListener { result ->
-                        for (document in result) {
-                            Log.d(TAG, "${document.id} => ${document.data}")
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.w(TAG, "Error getting documents.", exception)
-                    }
-            }) {
-                Text(text = "GET")
-            }
 
-            Button(onClick = {
-                db.collection("users")
-                    .get()
-                    .addOnSuccessListener { result ->
-                        for (document in result) {
-                            db.collection("users").document(document.id)
-                                .delete()
-                                .addOnSuccessListener {
-                                    Log.w(TAG, "successfully deleted all documents.")
-                                }
-                                .addOnFailureListener { exception ->
-                                    Log.w(TAG, "Error deleting documents.", exception)
-                                }
-                        }
-                    }
-                    .addOnFailureListener { exception ->
-                        Log.w(TAG, "Error getting documents.", exception)
-                    }
-            }) {
-                Text(text = "DELETE ALL")
-            }
+//            Button(onClick = {
+//                db.collection("users")
+//                    .get()
+//                    .addOnSuccessListener { result ->
+//                        for (document in result) {
+//                            db.collection("users").document(document.id)
+//                                .delete()
+//                                .addOnSuccessListener {
+//                                    Log.w(TAG, "successfully deleted all documents.")
+//                                }
+//                                .addOnFailureListener { exception ->
+//                                    Log.w(TAG, "Error deleting documents.", exception)
+//                                }
+//                        }
+//                    }
+//                    .addOnFailureListener { exception ->
+//                        Log.w(TAG, "Error getting documents.", exception)
+//                    }
+//            }) {
+//                Text(text = "DELETE ALL")
+//            }
 
         }
 
         print(it)
     }
+}
+
+
+@Composable
+fun NameOfEvent(viewModel: AppViewModel) {
+    var text by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        value = text,
+        onValueChange = { text = it },
+        label = { Text("name") }
+    )
+    viewModel.nn = text
+}
+
+@Composable
+fun DescriptionOfEvent(viewModel: AppViewModel) {
+    var text by remember { mutableStateOf("") }
+
+    OutlinedTextField(
+        value = text,
+        onValueChange = { text = it },
+        label = { Text("description") }
+    )
+    viewModel.dd = text
 }

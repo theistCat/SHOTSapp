@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.SwipeRefreshState
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.firebase.firestore.ktx.firestore
@@ -56,28 +57,23 @@ fun EventScreen(
 
                 viewModel.doc.clear()
 
-                db.collection("users").get().addOnSuccessListener { result ->
+                db.collection("events").get().addOnSuccessListener { result ->
                     for (document in result) {
                         Log.d(ContentValues.TAG, "${document.id} => ${document.data}")
-                        viewModel.doc.add(document.id)
+                        viewModel.doc.add("${document.id} => ${document.data}")
                     }
                 }.addOnFailureListener { exception ->
                     Log.w(ContentValues.TAG, "Error getting documents.", exception)
                 }
-            },
-            indicator = { state, trigger ->
-                GlowIndicator(
-                    swipeRefreshState = state,
-                    refreshTriggerDistance = trigger
-                )
-            }) {
+            }
+        ) {
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
                 items(viewModel.doc.size) {
                     Row(Modifier.padding(16.dp)) {
                         Image(
-                            painter = painterResource(R.drawable.ic_create),
+                            painter = painterResource(R.drawable.ic_event),
                             contentDescription = null,
                             modifier = Modifier.size(64.dp),
                         )
@@ -110,45 +106,5 @@ fun Title(whichScreen: String) {
             .padding(4.dp), contentAlignment = Alignment.Center
     ) {
         Text(text = whichScreen, textAlign = TextAlign.Center, fontSize = 30.sp)
-    }
-}
-
-////////////////
-@Composable
-fun GlowIndicator(
-    swipeRefreshState: SwipeRefreshState,
-    refreshTriggerDistance: Dp,
-    color: Color = MaterialTheme.colors.primary,
-) {
-    Box(
-        Modifier
-            .drawWithCache {
-                onDrawBehind {
-                    val distance = refreshTriggerDistance.toPx()
-                    val progress = (swipeRefreshState.indicatorOffset / distance).coerceIn(0f, 1f)
-                    // We draw a translucent glow
-                    val brush = Brush.verticalGradient(
-                        0f to color.copy(alpha = 0.45f),
-                        1f to color.copy(alpha = 0f)
-                    )
-                    // And fade the glow in/out based on the swipe progress
-                    drawRect(brush = brush, alpha = FastOutSlowInEasing.transform(progress))
-                }
-            }
-            .fillMaxWidth()
-            .height(72.dp)
-    ) {
-        if (swipeRefreshState.isRefreshing) {
-            // If we're refreshing, show an indeterminate progress indicator
-            LinearProgressIndicator(Modifier.fillMaxWidth())
-        } else {
-            // Otherwise we display a determinate progress indicator with the current swipe progress
-            val trigger = with(LocalDensity.current) { refreshTriggerDistance.toPx() }
-            val progress = (swipeRefreshState.indicatorOffset / trigger).coerceIn(0f, 1f)
-            LinearProgressIndicator(
-                progress = progress,
-                modifier = Modifier.fillMaxWidth(),
-            )
-        }
     }
 }
