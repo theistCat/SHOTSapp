@@ -1,9 +1,6 @@
 package com.sk.shotsapp
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -26,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.sk.shotsapp.screens.*
+import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 @Composable
 fun NaviG(viewModel: AppViewModel) {
@@ -40,7 +38,7 @@ fun NaviG(viewModel: AppViewModel) {
 //        topBar = { RoundedProfileIcon(navControllerMain = navControllerMain) },
         bottomBar = {
             BottomNavigation(
-                backgroundColor = Color.White
+                backgroundColor = ifDarkTheme(status = true)
             ) {
                 val navBackStackEntry by navControllerMain.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination

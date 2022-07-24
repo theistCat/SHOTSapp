@@ -1,16 +1,16 @@
 package com.sk.shotsapp.screens
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material.Button
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -22,6 +22,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
+import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 @Composable
 fun WelcomeScreen(viewModel: AppViewModel) {
@@ -61,10 +62,16 @@ fun LogoutButton(viewModel: AppViewModel, navController: NavController) {
             .padding(top = 40.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = {
-            viewModel.signOut()
-            navController.navigate("profile")
-        }) {
+        Button(
+            onClick = {
+                viewModel.signOut()
+                navController.navigate("profile")
+            },
+            colors = ButtonDefaults.buttonColors(
+                backgroundColor = ifDarkTheme(false),
+                contentColor = ifDarkTheme(true)
+            )
+        ) {
             Text(
                 text = if (viewModel.isLoggedIn.value) {
                     stringResource(R.string.log_out)

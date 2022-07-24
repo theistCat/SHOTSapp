@@ -1,4 +1,4 @@
-@file:OptIn(ExperimentalPermissionsApi::class)
+@file:OptIn(ExperimentalPermissionsApi::class, ExperimentalPermissionsApi::class)
 
 package com.sk.shotsapp.screens
 
@@ -7,6 +7,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -32,6 +33,7 @@ import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.Purple200
 import com.sk.shotsapp.ui.theme.Purple700
+import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 
 @Composable
@@ -108,7 +110,7 @@ fun HomeScreen(navControllerMain: NavController) {
                     Alignment.BottomEnd
                 )
                 .offset((-16).dp, (-16).dp),
-            backgroundColor = Color.White,
+            backgroundColor = ifDarkTheme(true),
 
             ) {
             Icon(painter = painterResource(id = R.drawable.ic_create), contentDescription = "")

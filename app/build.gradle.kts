@@ -25,8 +25,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -66,6 +65,8 @@ dependencies {
     implementation("com.google.android.gms:play-services-auth:20.2.0")
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
+    implementation("com.google.firebase:firebase-firestore-ktx")
+
 
     debugImplementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"]}")
 
@@ -76,14 +77,10 @@ dependencies {
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0") // Inside Nav graph DI to work
 
     implementation("com.google.maps.android:maps-compose:2.2.1")
-    implementation("com.google.android.gms:play-services-maps:18.0.2")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("androidx.compose.foundation:foundation:1.3.0-alpha01")
 
     implementation("com.google.accompanist:accompanist-permissions:0.21.1-beta")
-
-//    //chat
-//    implementation("io.getstream:stream-chat-android-client:5.5.0")
-//    implementation ("io.getstream:stream-chat-android-ui-components:5.5.0")
-
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.17.0")
 
 }
