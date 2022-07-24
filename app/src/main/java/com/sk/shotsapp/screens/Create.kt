@@ -17,14 +17,14 @@ import com.sk.shotsapp.Screen
 fun CreateNew() {
     Scaffold(topBar = { Title(whichScreen = Screen.Create.label) }) {
         val db = Firebase.firestore
-        Column() {
+        Column {
             Button(
                 onClick = {// Create a new user with a first, middle, and last name
                     val user = hashMapOf(
-                        "first" to "Alan",
-                        "middle" to "Mathison",
-                        "last" to "Turing",
-                        "born" to 1912
+                        "name" to "gulyat",
+                        "type" to "free",
+                        "gde" to "tashkent",
+                        "kogda" to 1400
                     )
 
                     db.collection("users")
@@ -56,12 +56,25 @@ fun CreateNew() {
             }
 
             Button(onClick = {
-                db.collection("users").document()
-                    .delete()
-                    .addOnSuccessListener { Log.d(TAG, "DocumentSnapshot successfully deleted!") }
-                    .addOnFailureListener { e -> Log.w(TAG, "Error deleting document", e) }
+                db.collection("users")
+                    .get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            db.collection("users").document(document.id)
+                                .delete()
+                                .addOnSuccessListener {
+                                    Log.w(TAG, "successfully deleted all documents.")
+                                }
+                                .addOnFailureListener { exception ->
+                                    Log.w(TAG, "Error deleting documents.", exception)
+                                }
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.w(TAG, "Error getting documents.", exception)
+                    }
             }) {
-                Text(text = "DELETE")
+                Text(text = "DELETE ALL")
             }
 
         }

@@ -82,5 +82,5 @@ dependencies {
 
     implementation("com.google.accompanist:accompanist-permissions:0.21.1-beta")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.17.0")
-
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.24.13-rc")
 }

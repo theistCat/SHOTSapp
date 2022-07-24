@@ -119,4 +119,8 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
         Firebase.auth.signOut()
         _isLoggedIn.value = false
     }
+
+    private val _doc = mutableListOf<String>()
+    val doc: MutableList<String> = _doc
+
 }

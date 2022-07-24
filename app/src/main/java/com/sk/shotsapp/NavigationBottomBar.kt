@@ -79,7 +79,7 @@ fun NaviG(viewModel: AppViewModel) {
         ) {
             composable("profile") { Profile(viewModel, navControllerMain) }
             composable("home") { HomeScreen(navControllerMain) }
-            composable("events") { EventScreen() }
+            composable("events") { EventScreen(viewModel) }
             composable("chat") { ChatScreen() }
             composable("create") { CreateNew() }
             composable("settings") { SettingScreen(viewModel, navControllerMain) }
