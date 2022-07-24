@@ -79,11 +79,11 @@ fun HomeScreen(navControllerMain: NavController) {
             cameraPositionState = cameraPositionState,
             onMapLoaded = {
 //                isMapLoaded = true
-                if (permissionState.hasPermission) {
-                    mapProperties.isMyLocationEnabled
-                } else {
-                    permissionState.launchPermissionRequest()
-                }
+//                if (permissionState.hasPermission) {
+//                    mapProperties.isMyLocationEnabled
+//                } else {
+//                    permissionState.launchPermissionRequest()
+//                }
             }
         ) {
 

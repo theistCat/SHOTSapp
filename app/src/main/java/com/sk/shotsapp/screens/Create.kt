@@ -8,39 +8,47 @@ import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
+import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
 
 
 @Composable
-fun CreateNew(viewModel: AppViewModel) {
+fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
     Scaffold(topBar = { Title(whichScreen = Screen.Create.label) }) {
         val db = Firebase.firestore
 
-        Column {
+        Column() {
 
             NameOfEvent(viewModel = viewModel)
             DescriptionOfEvent(viewModel = viewModel)
 
-            Button(
-                onClick = {// Create a new user with a first, middle, and last name
-                    val event = hashMapOf(
-                        "name" to viewModel.nn,
-                        "description" to viewModel.dd
-                    )
+            Button(onClick = {// Create a new user with a first, middle, and last name
+                val event = hashMapOf(
+                    "name" to viewModel.nn, "description" to viewModel.dd, "author" to "${
+                        if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName
+                        else Firebase.auth.currentUser?.email?.dropLast(10)
+                    }"
+                )
 
-                    db.collection("events")
-                        .add(event)
-                        .addOnSuccessListener { documentReference ->
-                            Log.d(TAG, "DocumentSnapshot added with ID: ${documentReference.id}")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.w(TAG, "Error adding document", e)
-                        }
-                }) {
+                db.collection("events").add(event).addOnSuccessListener { documentReference ->
+                    Log.d(
+                        TAG, "DocumentSnapshot added with ID: ${documentReference.id}"
+                    )
+                }.addOnFailureListener { e ->
+                    Log.w(TAG, "Error adding document", e)
+                }
+
+                navControllerMain.navigate("events")
+
+            }) {
                 Text(text = "ADD")
 
             }
@@ -79,11 +87,7 @@ fun CreateNew(viewModel: AppViewModel) {
 fun NameOfEvent(viewModel: AppViewModel) {
     var text by remember { mutableStateOf("") }
 
-    OutlinedTextField(
-        value = text,
-        onValueChange = { text = it },
-        label = { Text("name") }
-    )
+    OutlinedTextField(value = text, onValueChange = { text = it }, label = { Text("name") })
     viewModel.nn = text
 }
 
@@ -91,10 +95,6 @@ fun NameOfEvent(viewModel: AppViewModel) {
 fun DescriptionOfEvent(viewModel: AppViewModel) {
     var text by remember { mutableStateOf("") }
 
-    OutlinedTextField(
-        value = text,
-        onValueChange = { text = it },
-        label = { Text("description") }
-    )
+    OutlinedTextField(value = text, onValueChange = { text = it }, label = { Text("description") })
     viewModel.dd = text
 }
