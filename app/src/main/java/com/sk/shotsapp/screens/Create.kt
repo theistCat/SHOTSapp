@@ -32,7 +32,7 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
 
             Button(onClick = {// Create a new user with a first, middle, and last name
                 val event = hashMapOf(
-                    "name" to viewModel.nn, "description" to viewModel.dd, "author" to "${
+                    "title" to viewModel.nn, "description" to viewModel.dd, "author" to "${
                         if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName
                         else Firebase.auth.currentUser?.email?.dropLast(10)
                     }"

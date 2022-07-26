@@ -63,9 +63,9 @@ dependencies {
     //firebase-auth
     implementation("com.google.firebase:firebase-auth:21.0.6")
     implementation("com.google.android.gms:play-services-auth:20.2.0")
-    implementation("com.google.firebase:firebase-auth-ktx")
-    implementation(platform("com.google.firebase:firebase-bom:29.3.1"))
-    implementation("com.google.firebase:firebase-firestore-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx:21.0.6")
+    implementation(platform("com.google.firebase:firebase-bom:30.3.0"))
+    implementation("com.google.firebase:firebase-firestore-ktx:24.2.1")
 
 
     debugImplementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"]}")
@@ -73,14 +73,14 @@ dependencies {
     //navigation
     implementation("androidx.navigation:navigation-compose:2.5.0")
 
-    implementation("com.google.dagger:hilt-android:2.42")
+    implementation("com.google.dagger:hilt-android:2.43")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0") // Inside Nav graph DI to work
 
-    implementation("com.google.maps.android:maps-compose:2.2.1")
+    implementation("com.google.maps.android:maps-compose:2.5.2")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
     implementation("androidx.compose.foundation:foundation:1.3.0-alpha01")
 
-    implementation("com.google.accompanist:accompanist-permissions:0.21.1-beta")
+    implementation("com.google.accompanist:accompanist-permissions:0.24.13-rc")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.17.0")
     implementation("com.google.accompanist:accompanist-swiperefresh:0.24.13-rc")
 }
