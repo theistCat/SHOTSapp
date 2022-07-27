@@ -67,7 +67,7 @@ fun NaviG(viewModel: AppViewModel) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("profile") { Profile(viewModel, navControllerMain) }
-            composable("home") { HomeScreen(navControllerMain) }
+            composable("home") { HomeScreen(navControllerMain, viewModel) }
             composable("events") { EventScreen(viewModel) }
             composable("chat") { ChatScreen() }
             composable("create") {

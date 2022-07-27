@@ -1,48 +1,38 @@
-@file:OptIn(ExperimentalPermissionsApi::class, ExperimentalPermissionsApi::class)
+@file:OptIn(
+    ExperimentalMaterialApi::class
+)
 
 package com.sk.shotsapp.screens
 
-import android.Manifest
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.fadeOut
-import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import android.content.ContentValues
+import android.util.Log
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.google.maps.android.compose.*
+import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
-import com.sk.shotsapp.ui.theme.Purple200
-import com.sk.shotsapp.ui.theme.Purple700
 import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 
 @Composable
-fun HomeScreen(navControllerMain: NavController) {
-
-    val permissionState =
-        rememberPermissionState(permission = Manifest.permission.ACCESS_FINE_LOCATION)
-
-//    var isMapLoaded by remember { mutableStateOf(false) }
+fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
+    val db = Firebase.firestore
 
     val mapProperties by remember {
         mutableStateOf(
@@ -68,52 +58,93 @@ fun HomeScreen(navControllerMain: NavController) {
     }
 
     Box(Modifier.fillMaxSize()) {
-        GoogleMap(
-            googleMapOptionsFactory = {
-                GoogleMapOptions().mapId("map01").zoomControlsEnabled(false)
-                    .mapToolbarEnabled(false).mapType(MapType.NORMAL.value)
-                    .camera(cameraPositionState.position)
-            },
-            properties = mapProperties,
-            uiSettings = mapUiSettings,
-            cameraPositionState = cameraPositionState,
-            onMapLoaded = {
-//                isMapLoaded = true
-//                if (permissionState.hasPermission) {
-//                    mapProperties.isMyLocationEnabled
+        ////////////////////beginnig of bottomsheet
+//        val scope = rememberCoroutineScope()
+        val scaffoldState = rememberBottomSheetScaffoldState()
+        BottomSheetScaffold(topBar = { Title(whichScreen = Screen.Home.label) },
+            sheetContent = {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(50.dp), contentAlignment = Alignment.Center
+
+                ) {
+                    Row() {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_up_arrow),
+                            contentDescription = "",
+//                            modifier = Modifier.size(16.dp)
+                        )
+//                        Text("Swipe up to expand sheet")
+                    }
+                }
+                /////////////
+//                if (viewModel.doc.isEmpty()) {
+//                    EmptyMessage()
 //                } else {
-//                    permissionState.launchPermissionRequest()
-//                }
+//                viewModel.doc.clear()
+//                viewModel.isReady.value = false
+                db.collection("events").get().addOnSuccessListener { result ->
+                    viewModel.doc.clear()
+                    for (document in result) {
+                        viewModel.doc.add("${document["author"]} => ${document["title"]} : ${document["description"]}")
+                        viewModel.evetId.add(document.id)
+                    }
+                    viewModel.isReady.value = true
+                }.addOnFailureListener { exception ->
+                    Log.w(ContentValues.TAG, "Error getting documents.", exception)
+                }
+                if (viewModel.isReady.value) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        items(viewModel.doc.size) { it ->
+                            EventCard(
+                                text = viewModel.doc[it], eventId = viewModel.evetId[it]
+                            )
+                        }
+                    }
+                }
+//                    Button(onClick = {
+//                        scope.launch { scaffoldState.bottomSheetState.collapse() }
+//                    }) {
+//                        Text("Click to collapse sheet")
+//                    }
+            },
+            scaffoldState = scaffoldState,
+            floatingActionButton = {
+                FloatingActionButton(
+                    onClick = { navControllerMain.navigate(Screen.Create.route) },
+                    modifier = Modifier.align(
+                        Alignment.BottomEnd
+                    ),
+                    backgroundColor = ifDarkTheme(true),
+                    elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp)
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_create),
+                        contentDescription = ""
+                    )
+                }
+            },
+            floatingActionButtonPosition = FabPosition.End,
+            sheetPeekHeight = 50.dp,
+            sheetElevation = 0.dp
+        ) { innerPadding ->
+            GoogleMap(contentPadding = innerPadding,
+                googleMapOptionsFactory = {
+                    GoogleMapOptions().mapId("map01").zoomControlsEnabled(false)
+                        .mapToolbarEnabled(false).mapType(MapType.NORMAL.value)
+                        .camera(cameraPositionState.position)
+                },
+                properties = mapProperties,
+                uiSettings = mapUiSettings,
+                cameraPositionState = cameraPositionState,
+                onMapLoaded = {
+
+                }) {
+
             }
-        ) {
-
-        }
-//        if (!isMapLoaded) {
-//            AnimatedVisibility(
-//                modifier = Modifier.matchParentSize(),
-//                visible = !isMapLoaded,
-//                enter = EnterTransition.None,
-//                exit = fadeOut()
-//            ) {
-//                CircularProgressIndicator(
-//                    modifier = Modifier
-//                        .background(MaterialTheme.colors.background)
-//                        .wrapContentSize()
-//                )
-//
-//            }
-//        }
-        FloatingActionButton(
-            onClick = { navControllerMain.navigate(Screen.Create.route) },
-            modifier = Modifier
-                .align(
-                    Alignment.BottomEnd
-                )
-                .offset((-16).dp, (-16).dp),
-            backgroundColor = ifDarkTheme(true),
-
-            ) {
-            Icon(painter = painterResource(id = R.drawable.ic_create), contentDescription = "")
         }
     }
 
