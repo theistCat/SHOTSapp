@@ -1,19 +1,21 @@
 package com.sk.shotsapp.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.OutlinedTextField
-import androidx.compose.material.Text
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
+import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 @Composable
 fun EmailLoginScreen(
@@ -40,13 +42,26 @@ fun EmailLoginScreen(
 
 @Composable
 fun EmailField(viewModel: AppViewModel) {
+    val focusManager = LocalFocusManager.current
     val userEmail = viewModel.userEmail.value
 
     OutlinedTextField(
         modifier = Modifier.fillMaxWidth(),
         value = userEmail,
         label = { Text(text = stringResource(R.string.email)) },
-        onValueChange = { viewModel.setUserEmail(it) }
+        onValueChange = { viewModel.setUserEmail(it) },
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedLabelColor = ifDarkTheme(false),
+            cursorColor = ifDarkTheme(false),
+            focusedBorderColor = ifDarkTheme(status = false)
+        ),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Next
+        ),
+        keyboardActions = KeyboardActions(onNext = {
+            focusManager.moveFocus(FocusDirection.Down)
+        }),
     )
 }
 
@@ -59,7 +74,17 @@ fun PasswordField(viewModel: AppViewModel) {
         visualTransformation = PasswordVisualTransformation(),
         value = password,
         label = { Text(text = stringResource(R.string.password)) },
-        onValueChange = { viewModel.setPassword(it) }
+        onValueChange = { viewModel.setPassword(it) },
+        singleLine = true,
+        colors = TextFieldDefaults.outlinedTextFieldColors(
+            focusedLabelColor = ifDarkTheme(false),
+            cursorColor = ifDarkTheme(false),
+            focusedBorderColor = ifDarkTheme(status = false)
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+        keyboardActions = KeyboardActions(onSend = {
+
+        })
     )
 }
 
@@ -71,7 +96,10 @@ fun ButtonEmailPasswordLogin(viewModel: AppViewModel) {
             .height(50.dp),
         enabled = viewModel.isValidEmailAndPassword(),
         content = { Text(text = stringResource(R.string.login)) },
-        onClick = { viewModel.signInWithEmailAndPassword() }
+        onClick = { viewModel.signInWithEmailAndPassword() },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = ifDarkTheme(false), contentColor = ifDarkTheme(true)
+        )
     )
 }
 
@@ -83,6 +111,9 @@ fun ButtonEmailPasswordCreate(viewModel: AppViewModel) {
             .height(50.dp),
         enabled = viewModel.isValidEmailAndPassword(),
         content = { Text(text = stringResource(R.string.create)) },
-        onClick = { viewModel.createUserWithEmailAndPassword() }
+        onClick = { viewModel.createUserWithEmailAndPassword() },
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = ifDarkTheme(false), contentColor = ifDarkTheme(true)
+        )
     )
 }

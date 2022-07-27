@@ -3,13 +3,15 @@ package com.sk.shotsapp.screens
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -18,7 +20,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
-import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.ifDarkTheme
 
@@ -78,39 +79,14 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
 
                 }
             }
-
-
-//            Button(onClick = {
-//                db.collection("users")
-//                    .get()
-//                    .addOnSuccessListener { result ->
-//                        for (document in result) {
-//                            db.collection("users").document(document.id)
-//                                .delete()
-//                                .addOnSuccessListener {
-//                                    Log.w(TAG, "successfully deleted all documents.")
-//                                }
-//                                .addOnFailureListener { exception ->
-//                                    Log.w(TAG, "Error deleting documents.", exception)
-//                                }
-//                        }
-//                    }
-//                    .addOnFailureListener { exception ->
-//                        Log.w(TAG, "Error getting documents.", exception)
-//                    }
-//            }) {
-//                Text(text = "DELETE ALL")
-//            }
-
+            print(it)
         }
-
-        print(it)
     }
 }
 
-
 @Composable
 fun NameOfEvent(viewModel: AppViewModel) {
+    val focusManager = LocalFocusManager.current
     var text by remember { mutableStateOf("") }
 
     OutlinedTextField(
@@ -120,11 +96,18 @@ fun NameOfEvent(viewModel: AppViewModel) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
+        singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
             focusedBorderColor = ifDarkTheme(status = false),
             focusedLabelColor = ifDarkTheme(status = false),
             cursorColor = ifDarkTheme(status = false)
-        )
+        ),
+        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }
+        ),
     )
     viewModel.nn = text
 }

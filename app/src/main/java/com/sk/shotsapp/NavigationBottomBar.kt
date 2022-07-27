@@ -20,8 +20,8 @@ fun NaviG(viewModel: AppViewModel) {
     val navControllerMain = rememberNavController()
     val items = listOf(
         Screen.Home,
-        Screen.Events,
-//        Screen.Chat,
+//        Screen.Events,
+        Screen.Chat,
         Screen.Profile
     )
     Scaffold(
@@ -68,7 +68,7 @@ fun NaviG(viewModel: AppViewModel) {
         ) {
             composable("profile") { Profile(viewModel, navControllerMain) }
             composable("home") { HomeScreen(navControllerMain, viewModel) }
-            composable("events") { EventScreen(viewModel) }
+//            composable("events") { EventScreen(viewModel) }
             composable("chat") { ChatScreen() }
             composable("create") {
                 if (viewModel.isLoggedIn.value) CreateNew(viewModel, navControllerMain)

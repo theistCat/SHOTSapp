@@ -138,4 +138,7 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
 
     private val _isReady = mutableStateOf(false)
     var isReady: MutableState<Boolean> = _isReady
+
+    private val _userName = String()
+    var userName: String = _userName
 }

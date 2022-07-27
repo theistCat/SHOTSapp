@@ -60,7 +60,7 @@ fun EventScreen(
                     viewModel.evetId.add(document.id)
                 }
             }.addOnFailureListener { exception ->
-                Log.w(ContentValues.TAG, "Error getting documents.", exception)
+                Log.w(TAG, "Error getting documents.", exception)
             }
         }) {
             LazyColumn(
@@ -86,7 +86,7 @@ fun Title(whichScreen: String) {
             .background(ifDarkTheme(status = true)),
         contentAlignment = Alignment.Center,
     ) {
-        Text(text = whichScreen, textAlign = TextAlign.Center, fontSize = 30.sp)
+        Text(text = whichScreen, textAlign = TextAlign.Center, fontSize = 30.sp, modifier = Modifier.padding(top = 8.dp, bottom = 8.dp))
     }
 }
 
