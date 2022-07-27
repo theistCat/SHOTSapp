@@ -1,5 +1,5 @@
 @file:OptIn(
-    ExperimentalMaterialApi::class
+    ExperimentalMaterialApi::class, ExperimentalMaterialApi::class
 )
 
 package com.sk.shotsapp.screens
@@ -31,7 +31,6 @@ import com.sk.shotsapp.ui.theme.ifDarkTheme
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
     val db = Firebase.firestore
@@ -41,7 +40,6 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
             MapProperties(
                 maxZoomPreference = 16f,
                 minZoomPreference = 8f,
-//                isMyLocationEnabled = true
             )
         )
     }
@@ -60,11 +58,11 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
     }
 
     Box(Modifier.fillMaxSize()) {
-        ////////////////////beginnig of bottomsheet
         val scope = rememberCoroutineScope()
         val scaffoldState = rememberBottomSheetScaffoldState()
         val interactionSource = remember { MutableInteractionSource() }
-        BottomSheetScaffold(topBar = { Title(whichScreen = Screen.Home.label) },
+        BottomSheetScaffold(
+            topBar = { Title(whichScreen = Screen.Home.label) },
             sheetContent = {
                 Box(
                     Modifier
@@ -105,11 +103,6 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
                         }
                     }
                 }
-//                    Button(onClick = {
-//                        scope.launch { scaffoldState.bottomSheetState.collapse() }
-//                    }) {
-//                        Text("Click to collapse sheet")
-//                    }
             },
             scaffoldState = scaffoldState,
             floatingActionButton = {
