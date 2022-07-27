@@ -6,15 +6,15 @@ package com.sk.shotsapp.screens
 
 import android.content.ContentValues
 import android.util.Log
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -28,8 +28,10 @@ import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.ifDarkTheme
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
     val db = Firebase.firestore
@@ -59,8 +61,9 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
 
     Box(Modifier.fillMaxSize()) {
         ////////////////////beginnig of bottomsheet
-//        val scope = rememberCoroutineScope()
+        val scope = rememberCoroutineScope()
         val scaffoldState = rememberBottomSheetScaffoldState()
+        val interactionSource = remember { MutableInteractionSource() }
         BottomSheetScaffold(topBar = { Title(whichScreen = Screen.Home.label) },
             sheetContent = {
                 Box(
@@ -70,20 +73,17 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
 
                 ) {
                     Row() {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_up_arrow),
-                            contentDescription = "",
-//                            modifier = Modifier.size(16.dp)
-                        )
-//                        Text("Swipe up to expand sheet")
+                        Icon(painter = painterResource(
+                            id = if (scaffoldState.bottomSheetState.isCollapsed && !scaffoldState.bottomSheetState.isAnimationRunning) R.drawable.ic_up_arrow else if (!scaffoldState.bottomSheetState.isCollapsed && !scaffoldState.bottomSheetState.isAnimationRunning) R.drawable.ic_down_arrow else R.drawable.ic_dash
+                        ), contentDescription = "", modifier = Modifier.clickable(
+                            interactionSource = interactionSource, indication = null
+                        ) {
+                            if (scaffoldState.bottomSheetState.isCollapsed) scope.launch { scaffoldState.bottomSheetState.expand() }
+                            else scope.launch { scaffoldState.bottomSheetState.collapse() }
+                        })
                     }
+
                 }
-                /////////////
-//                if (viewModel.doc.isEmpty()) {
-//                    EmptyMessage()
-//                } else {
-//                viewModel.doc.clear()
-//                viewModel.isReady.value = false
                 db.collection("events").get().addOnSuccessListener { result ->
                     viewModel.doc.clear()
                     for (document in result) {
@@ -114,18 +114,25 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
             scaffoldState = scaffoldState,
             floatingActionButton = {
                 FloatingActionButton(
-                    onClick = { navControllerMain.navigate(Screen.Create.route) },
-                    modifier = Modifier.align(
-                        Alignment.BottomEnd
-                    ),
+                    onClick = {
+                        if (scaffoldState.bottomSheetState.isCollapsed) navControllerMain.navigate(
+                            Screen.Create.route
+                        )
+                    },
+                    modifier = Modifier
+                        .align(
+                            Alignment.BottomEnd
+                        )
+                        .alpha(if (scaffoldState.bottomSheetState.isCollapsed && !scaffoldState.bottomSheetState.isAnimationRunning) 1f else 0f),
                     backgroundColor = ifDarkTheme(true),
-                    elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp)
+                    elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_create),
                         contentDescription = ""
                     )
                 }
+
             },
             floatingActionButtonPosition = FabPosition.End,
             sheetPeekHeight = 50.dp,

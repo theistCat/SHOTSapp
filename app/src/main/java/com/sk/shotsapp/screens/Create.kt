@@ -62,7 +62,7 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
                                     Log.w(TAG, "Error adding document", e)
                                 }
 
-                            navControllerMain.navigate("events")
+                            navControllerMain.navigate("home")
                         } else {
                             viewModel.isError.value = true
                         }

@@ -12,6 +12,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.screens.*
 import com.sk.shotsapp.ui.theme.ifDarkTheme
 
@@ -36,6 +39,10 @@ fun NaviG(viewModel: AppViewModel) {
                         icon = {
                             Icon(
                                 painter = painterResource(id = screen.resourceId),
+//                                painter = if (viewModel.isLoggedIn.value && Firebase.auth.currentUser?.photoUrl != null && screen.route == "profile") rememberAsyncImagePainter(
+//                                    Firebase.auth.currentUser?.photoUrl
+//                                )
+//                                else painterResource(id = screen.resourceId),
                                 contentDescription = screen.route
                             )
                         },
