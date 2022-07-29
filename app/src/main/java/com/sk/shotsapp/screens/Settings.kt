@@ -22,6 +22,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
+import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 @Composable
@@ -48,8 +49,8 @@ fun LogoutButton(viewModel: AppViewModel, navController: NavController) {
                 navController.navigate("profile")
             },
             colors = ButtonDefaults.buttonColors(
-                backgroundColor = ifDarkTheme(false),
-                contentColor = ifDarkTheme(true)
+                backgroundColor = BarColor,
+                contentColor = Color.White
             )
         ) {
             Text(

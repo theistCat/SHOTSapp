@@ -13,6 +13,8 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -121,11 +123,20 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
         _isLoggedIn.value = false
     }
 
+    private val _db = Firebase.firestore
+    var db: FirebaseFirestore = _db
+
     private val _doc = mutableListOf<String>()
     val doc: MutableList<String> = _doc
 
     private val _eventID = mutableListOf<String>()
     val evetId: MutableList<String> = _eventID
+
+    private val _photoUrl = mutableListOf<String>()
+    val photoUrl: MutableList<String> = _photoUrl
+
+    private val _uids = mutableListOf<String>()
+    val uids: MutableList<String> = _uids
 
     private val _nn = String()
     var nn: String = _nn
@@ -141,4 +152,7 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
 
     private val _userName = String()
     var userName: String = _userName
+
+    private val _uid = String()
+    var uid: String = _uid
 }

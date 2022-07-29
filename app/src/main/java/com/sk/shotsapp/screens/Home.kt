@@ -15,25 +15,29 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.compose.*
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
+import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.ifDarkTheme
 import kotlinx.coroutines.launch
 
 
 @Composable
 fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
-    val db = Firebase.firestore
+    viewModel.db = Firebase.firestore
 
     val mapProperties by remember {
         mutableStateOf(
@@ -71,22 +75,26 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
 
                 ) {
                     Row() {
-                        Icon(painter = painterResource(
-                            id = if (scaffoldState.bottomSheetState.isCollapsed && !scaffoldState.bottomSheetState.isAnimationRunning) R.drawable.ic_up_arrow else if (!scaffoldState.bottomSheetState.isCollapsed && !scaffoldState.bottomSheetState.isAnimationRunning) R.drawable.ic_down_arrow else R.drawable.ic_dash
-                        ), contentDescription = "", modifier = Modifier.clickable(
-                            interactionSource = interactionSource, indication = null
-                        ) {
-                            if (scaffoldState.bottomSheetState.isCollapsed) scope.launch { scaffoldState.bottomSheetState.expand() }
-                            else scope.launch { scaffoldState.bottomSheetState.collapse() }
-                        })
+                        Icon(
+                            painter = painterResource(
+                                id = if (scaffoldState.bottomSheetState.isCollapsed && !scaffoldState.bottomSheetState.isAnimationRunning) R.drawable.ic_up_arrow else if (!scaffoldState.bottomSheetState.isCollapsed && !scaffoldState.bottomSheetState.isAnimationRunning) R.drawable.ic_down_arrow else R.drawable.ic_dash
+                            ), contentDescription = "", modifier = Modifier.clickable(
+                                interactionSource = interactionSource, indication = null
+                            ) {
+                                if (scaffoldState.bottomSheetState.isCollapsed) scope.launch { scaffoldState.bottomSheetState.expand() }
+                                else scope.launch { scaffoldState.bottomSheetState.collapse() }
+                            }, tint = BarColor
+                        )
                     }
 
                 }
-                db.collection("events").get().addOnSuccessListener { result ->
+                viewModel.db.collection("events").get().addOnSuccessListener { result ->
                     viewModel.doc.clear()
                     for (document in result) {
                         viewModel.doc.add("${document["author"]} => ${document["title"]} : ${document["description"]}")
+                        viewModel.photoUrl.add(document["photoUrl"].toString())
                         viewModel.evetId.add(document.id)
+                        viewModel.uids.add(document["uid"].toString())
                     }
                     viewModel.isReady.value = true
                 }.addOnFailureListener { exception ->
@@ -98,7 +106,11 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
                     ) {
                         items(viewModel.doc.size) { it ->
                             EventCard(
-                                text = viewModel.doc[it], eventId = viewModel.evetId[it]
+                                text = viewModel.doc[it],
+                                eventId = viewModel.evetId[it],
+                                painter = viewModel.photoUrl[it],
+                                viewModel,
+                                false
                             )
                         }
                     }
@@ -117,12 +129,14 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
                             Alignment.BottomEnd
                         )
                         .alpha(if (scaffoldState.bottomSheetState.isCollapsed && !scaffoldState.bottomSheetState.isAnimationRunning) 1f else 0f),
-                    backgroundColor = ifDarkTheme(true),
+//                    backgroundColor = ifDarkTheme(true),
+                    backgroundColor = BarColor,
                     elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
                 ) {
                     Icon(
                         painter = painterResource(id = R.drawable.ic_create),
-                        contentDescription = ""
+                        contentDescription = "",
+                        tint = Color.White
                     )
                 }
 

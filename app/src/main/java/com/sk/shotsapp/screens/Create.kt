@@ -10,17 +10,23 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
+import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
+import com.sk.shotsapp.ui.theme.BarColor
+import com.sk.shotsapp.ui.theme.SecondColor
 import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 
@@ -49,7 +55,10 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
                                 "author" to "${
                                     if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName
                                     else Firebase.auth.currentUser?.email?.dropLast(10)
-                                }"
+                                }",
+                                "photoUrl" to if (FirebaseAuth.getInstance().currentUser?.photoUrl != null) Firebase.auth.currentUser?.photoUrl
+                                        else R.drawable.ic_event.toString(),
+                                "uid" to viewModel.uid
                             )
 
                             db.collection("events").add(event)
@@ -68,7 +77,8 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
                         }
 
                     }, colors = ButtonDefaults.buttonColors(
-                        backgroundColor = ifDarkTheme(false), contentColor = ifDarkTheme(true)
+//                        backgroundColor = ifDarkTheme(false), contentColor = ifDarkTheme(true)
+                        backgroundColor = BarColor, contentColor = Color.White
                     )
                 ) {
 
@@ -98,16 +108,14 @@ fun NameOfEvent(viewModel: AppViewModel) {
             .padding(8.dp),
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = ifDarkTheme(status = false),
-            focusedLabelColor = ifDarkTheme(status = false),
-            cursorColor = ifDarkTheme(status = false)
+            focusedBorderColor = SecondColor,
+            focusedLabelColor = SecondColor,
+            cursorColor = SecondColor
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-        keyboardActions = KeyboardActions(
-            onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            }
-        ),
+        keyboardActions = KeyboardActions(onNext = {
+            focusManager.moveFocus(FocusDirection.Down)
+        }),
     )
     viewModel.nn = text
 }
@@ -116,17 +124,16 @@ fun NameOfEvent(viewModel: AppViewModel) {
 fun DescriptionOfEvent(viewModel: AppViewModel) {
     var text by remember { mutableStateOf("") }
 
-    OutlinedTextField(
-        value = text,
+    OutlinedTextField(value = text,
         onValueChange = { text = it },
         label = { Text(if (!viewModel.isError.value) "description for it" else "field can't be empty") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = ifDarkTheme(status = false),
-            focusedLabelColor = ifDarkTheme(status = false),
-            cursorColor = ifDarkTheme(status = false)
+            focusedBorderColor = SecondColor,
+            focusedLabelColor = SecondColor,
+            cursorColor = SecondColor
         )
     )
     viewModel.dd = text
