@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -15,7 +16,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
-import com.sk.shotsapp.ui.theme.ifDarkTheme
+import com.sk.shotsapp.ui.theme.BarColor
 
 @Composable
 fun EmailLoginScreen(
@@ -52,9 +53,9 @@ fun EmailField(viewModel: AppViewModel) {
         onValueChange = { viewModel.setUserEmail(it) },
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedLabelColor = ifDarkTheme(false),
-            cursorColor = ifDarkTheme(false),
-            focusedBorderColor = ifDarkTheme(status = false)
+            focusedLabelColor = BarColor,
+            cursorColor = BarColor,
+            focusedBorderColor = BarColor
         ),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
@@ -77,14 +78,10 @@ fun PasswordField(viewModel: AppViewModel) {
         onValueChange = { viewModel.setPassword(it) },
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedLabelColor = ifDarkTheme(false),
-            cursorColor = ifDarkTheme(false),
-            focusedBorderColor = ifDarkTheme(status = false)
-        ),
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-        keyboardActions = KeyboardActions(onSend = {
-
-        })
+            focusedLabelColor = BarColor,
+            cursorColor = BarColor,
+            focusedBorderColor = BarColor
+        )
     )
 }
 
@@ -95,10 +92,10 @@ fun ButtonEmailPasswordLogin(viewModel: AppViewModel) {
             .fillMaxWidth()
             .height(50.dp),
         enabled = viewModel.isValidEmailAndPassword(),
-        content = { Text(text = stringResource(R.string.login)) },
+        content = { Text(text = stringResource(R.string.login), color = Color.White) },
         onClick = { viewModel.signInWithEmailAndPassword() },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = ifDarkTheme(false), contentColor = ifDarkTheme(true)
+            backgroundColor = BarColor
         )
     )
 }
@@ -110,10 +107,10 @@ fun ButtonEmailPasswordCreate(viewModel: AppViewModel) {
             .fillMaxWidth()
             .height(50.dp),
         enabled = viewModel.isValidEmailAndPassword(),
-        content = { Text(text = stringResource(R.string.create)) },
+        content = { Text(text = stringResource(R.string.create), color = Color.White) },
         onClick = { viewModel.createUserWithEmailAndPassword() },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = ifDarkTheme(false), contentColor = ifDarkTheme(true)
+            backgroundColor = BarColor
         )
     )
 }

@@ -17,7 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -30,6 +29,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
+import com.sk.shotsapp.ui.theme.BarColor
 
 private const val TAG = "LoginScreen"
 
@@ -98,8 +98,7 @@ fun SignInWithGoogleButton(buttonWidth: Dp, viewModel: AppViewModel) {
     OutlinedButton(
         modifier = Modifier.width(buttonWidth),
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color.LightGray,
-            contentColor = MaterialTheme.colors.onSurface
+            backgroundColor = BarColor
         ),
         onClick = {
             val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -149,7 +148,7 @@ fun SignInButtonRow(@DrawableRes iconId: Int, @StringRes buttonTextId: Int) {
 @Composable
 fun LoginButtonIcon(@DrawableRes painterResourceId: Int) {
     Icon(
-        tint = Color.Unspecified,
+        tint = Color.White,
         painter = painterResource(painterResourceId),
         contentDescription = null
     )
@@ -163,6 +162,7 @@ fun LoginButtonText(@StringRes stringResourceId: Int) {
         style = MaterialTheme.typography.button,
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        color = Color.White
     )
 }

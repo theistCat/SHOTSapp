@@ -3,7 +3,6 @@ package com.sk.shotsapp.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.MaterialTheme.colors
-import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -51,7 +50,9 @@ fun ifDarkTheme(status: Boolean): Color {
 }
 
 @Composable
-fun SHOTScomposeTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun SHOTScomposeTheme(
+//    darkTheme: Boolean = isSystemInDarkTheme(),
+    content: @Composable () -> Unit) {
 //    val colors = if (darkTheme) {
 //        DarkColorPalette
 //    } else {
@@ -60,9 +61,8 @@ fun SHOTScomposeTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Comp
 
     val systemUiController = rememberSystemUiController()
     systemUiController.setSystemBarsColor(
-        color = BarColor
+        color = Color.White
     )
-//    if (darkTheme) {
 //        systemUiController.setSystemBarsColor(
 //            color = Color.Black
 //        )

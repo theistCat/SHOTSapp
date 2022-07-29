@@ -1,6 +1,7 @@
 package com.sk.shotsapp
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -10,16 +11,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.google.firebase.firestore.FirebaseFirestore
 import com.sk.shotsapp.screens.*
-import com.sk.shotsapp.ui.theme.BarColor
-import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 @Composable
 fun NaviG(viewModel: AppViewModel) {
@@ -34,7 +33,7 @@ fun NaviG(viewModel: AppViewModel) {
         bottomBar = {
             BottomNavigation(
 //                backgroundColor = ifDarkTheme(status = true)
-                backgroundColor = BarColor
+                backgroundColor = Color.White
             ) {
                 val navBackStackEntry by navControllerMain.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
@@ -43,8 +42,9 @@ fun NaviG(viewModel: AppViewModel) {
                         icon = {
                             Icon(
                                 painter = painterResource(id = screen.resourceId),
-                                tint = Color.White,
-                                contentDescription = screen.route
+//                                tint = BarColor,
+                                contentDescription = screen.route,
+                                modifier = Modifier.size(if (screen.route == "home") 45.dp else 30.dp)
                             )
                         },
 //                        label = { Text(screen.label) },

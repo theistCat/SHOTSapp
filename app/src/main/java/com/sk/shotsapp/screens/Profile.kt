@@ -4,18 +4,14 @@ import android.content.ContentValues
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -29,15 +25,11 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.BarColor
-import com.sk.shotsapp.ui.theme.ifDarkTheme
-import kotlinx.coroutines.launch
 
 @Composable
 fun Profile(loginViewModel: AppViewModel, navControllerMain: NavController) {
@@ -79,17 +71,15 @@ fun NavigateBetweenScreen(
             loginViewModel.setError("")
             EmailLoginScreen(loginViewModel)
         }
-        composable(route = "Welcome") { WelcomeScreen(loginViewModel) }
+        composable(route = "Welcome") { WelcomeScreen(loginViewModel, navController) }
     }
 }
 
 @Composable
-fun WelcomeScreen(viewModel: AppViewModel) {
+fun WelcomeScreen(viewModel: AppViewModel, navController: NavController) {
     viewModel.userName =
         if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName.toString()
         else Firebase.auth.currentUser?.email?.dropLast(10).toString()
-
-    viewModel.uid = Firebase.auth.currentUser?.uid.toString()
 
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
         Column(Modifier.fillMaxWidth()) {
@@ -97,19 +87,22 @@ fun WelcomeScreen(viewModel: AppViewModel) {
                 text = "Welcome HOME!", fontSize = 30.sp,
                 textAlign = TextAlign.Center
             )
-            MyEvents(viewModel = viewModel)
+            MyEvents(viewModel = viewModel, navController = navController)
         }
     }
 }
 
 @Composable
-fun MyEvents(viewModel: AppViewModel) {
+fun MyEvents(viewModel: AppViewModel, navController: NavController) {
     viewModel.db.collection("events").get().addOnSuccessListener { result ->
         viewModel.doc.clear()
+        viewModel.uids.clear()
+        viewModel.photoUrl.clear()
+        viewModel.eventId.clear()
         for (document in result) {
             viewModel.doc.add("${document["author"]} => ${document["title"]} : ${document["description"]}")
             viewModel.photoUrl.add(document["photoUrl"].toString())
-            viewModel.evetId.add(document.id)
+            viewModel.eventId.add(document.id)
             viewModel.uids.add(document["uid"].toString())
         }
         viewModel.isReady.value = true
@@ -121,13 +114,14 @@ fun MyEvents(viewModel: AppViewModel) {
             modifier = Modifier.fillMaxSize()
         ) {
             items(viewModel.doc.size) { it ->
-                if (viewModel.uids[it] == viewModel.uid)
+                if (viewModel.uids[it] == Firebase.auth.currentUser?.uid)
                     EventCard(
                         text = viewModel.doc[it],
-                        eventId = viewModel.evetId[it],
+                        eventId = viewModel.eventId[it],
                         painter = viewModel.photoUrl[it],
                         viewModel,
-                        true
+                        true,
+                        navController = navController
                     )
             }
         }
@@ -158,14 +152,13 @@ fun SettingsIcon(navControllerMain: NavController) {
                 .align(Alignment.CenterEnd)
                 .clickable { navControllerMain.navigate("settings") },
 //            tint = ifDarkTheme(status = false)
-            tint = Color.White
+            tint = BarColor
         )
     }
 }
 
 @Composable
 fun Avatar(loginViewModel: AppViewModel) {
-
     Image(
         painter = if (loginViewModel.isLoggedIn.value && Firebase.auth.currentUser?.photoUrl != null) rememberAsyncImagePainter(
             Firebase.auth.currentUser?.photoUrl

@@ -1,39 +1,28 @@
 package com.sk.shotsapp.screens
 
-import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.util.Log
 import android.widget.Toast
-import androidx.annotation.DrawableRes
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
-import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.BarColor
-import com.sk.shotsapp.ui.theme.ifDarkTheme
-import kotlinx.coroutines.delay
 
 //@Composable
 //fun EventScreen(
@@ -62,7 +51,7 @@ import kotlinx.coroutines.delay
 //            db.collection("events").get().addOnSuccessListener { result ->
 //                for (document in result) {
 //                    viewModel.doc.add("${document["author"]} => ${document["title"]} : ${document["description"]}")
-//                    viewModel.evetId.add(document.id)
+//                    viewModel.eventId.add(document.id)
 //                }
 //            }.addOnFailureListener { exception ->
 //                Log.w(TAG, "Error getting documents.", exception)
@@ -74,7 +63,7 @@ import kotlinx.coroutines.delay
 //                items(viewModel.doc.size) { it ->
 ////                    EventCard(
 ////                        text = viewModel.doc[it],
-////                        eventId = viewModel.evetId[it],
+////                        eventId = viewModel.eventId[it],
 ////                        R.drawable.ic_event.toString()
 ////                    )
 //                }
@@ -93,15 +82,15 @@ fun Title(whichScreen: String) {
         modifier = Modifier
             .fillMaxWidth()
 //            .background(ifDarkTheme(status = true)),
-            .background(BarColor),
+            .background(Color.White),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = whichScreen,
             textAlign = TextAlign.Center,
-            fontSize = 30.sp,
+            fontSize = 40.sp,
             modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
-            color = Color.White
+            color = BarColor
         )
     }
 }
@@ -112,10 +101,13 @@ fun EventCard(
     eventId: String,
     painter: String,
     viewModel: AppViewModel,
-    deleteBtn: Boolean
+    deleteBtn: Boolean,
+    navController: NavController
 ) {
     val context = LocalContext.current
-    Card(border = BorderStroke(2.dp, Color.LightGray)) {
+    Card(
+
+    ) {
         Row(
             Modifier
                 .padding(16.dp)
@@ -126,8 +118,12 @@ fun EventCard(
                 }) {
             Image(
                 painter = rememberAsyncImagePainter(model = painter),
+                contentScale = ContentScale.Crop,
                 contentDescription = null,
-                modifier = Modifier.size(64.dp),
+                modifier = Modifier
+                    .size(64.dp)
+                    .clip(CircleShape)                       // clip to the circle shape
+                    .border(2.dp, Color.Gray, CircleShape),
             )
 
             Spacer(Modifier.width(8.dp))
@@ -141,47 +137,47 @@ fun EventCard(
             )
 
             if (deleteBtn) {
-                Button(
-                    onClick = {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete),
+                    contentDescription = "",
+                    tint = BarColor,
+                    modifier = Modifier.clickable {
                         viewModel.db.collection("events").document(eventId).delete()
                             .addOnSuccessListener {
-                                Log.w(TAG, "successfully deleted all documents.")
-
+                                Log.w(TAG, "Document successfully deleted.")
                             }.addOnFailureListener { exception ->
-                                Log.w(TAG, "Error deleting documents.", exception)
+                                Log.w(TAG, "Error deleting document.", exception)
                             }
-                    },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = BarColor),
-//            modifier = Modifier.padding(4.dp)
-                ) {
-                    Text(text = "X", fontSize = 20.sp, color = Color.White)
-                }
+                        navController.navigate("Welcome")
+                    })
             }
         }
     }
 
+    Divider(color = BarColor, modifier = Modifier.fillMaxWidth())
+
 }
 
-@Composable
-fun EmptyMessage() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column() {
-            Text(
-                text = "Empty",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
-                fontSize = 50.sp,
-                textAlign = TextAlign.Center
-            )
-            Text(
-                text = "pull to refresh",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
-                fontSize = 30.sp,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
+//@Composable
+//fun EmptyMessage() {
+//    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//        Column() {
+//            Text(
+//                text = "Empty",
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(24.dp),
+//                fontSize = 50.sp,
+//                textAlign = TextAlign.Center
+//            )
+//            Text(
+//                text = "pull to refresh",
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(24.dp),
+//                fontSize = 30.sp,
+//                textAlign = TextAlign.Center
+//            )
+//        }
+//    }
+//}

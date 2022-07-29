@@ -12,22 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
-import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.BarColor
-import com.sk.shotsapp.ui.theme.SecondColor
-import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 
 @Composable
@@ -47,6 +42,7 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
             ) {
                 Button(
                     onClick = {// Create a new user with a first, middle, and last name
+
                         if (viewModel.nn.isNotEmpty() && viewModel.dd.isNotEmpty()) {
                             viewModel.isError.value = false
                             val event = hashMapOf(
@@ -57,8 +53,8 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
                                     else Firebase.auth.currentUser?.email?.dropLast(10)
                                 }",
                                 "photoUrl" to if (FirebaseAuth.getInstance().currentUser?.photoUrl != null) Firebase.auth.currentUser?.photoUrl
-                                        else R.drawable.ic_event.toString(),
-                                "uid" to viewModel.uid
+                                else "https://github.com/theistCat/theistCat.github.io/blob/main/icons8-no-image-50.png",
+                                "uid" to Firebase.auth.currentUser?.uid
                             )
 
                             db.collection("events").add(event)
@@ -108,9 +104,9 @@ fun NameOfEvent(viewModel: AppViewModel) {
             .padding(8.dp),
         singleLine = true,
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = SecondColor,
-            focusedLabelColor = SecondColor,
-            cursorColor = SecondColor
+            focusedBorderColor = BarColor,
+            focusedLabelColor = BarColor,
+            cursorColor = BarColor
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = {
@@ -124,16 +120,17 @@ fun NameOfEvent(viewModel: AppViewModel) {
 fun DescriptionOfEvent(viewModel: AppViewModel) {
     var text by remember { mutableStateOf("") }
 
-    OutlinedTextField(value = text,
+    OutlinedTextField(
+        value = text,
         onValueChange = { text = it },
         label = { Text(if (!viewModel.isError.value) "description for it" else "field can't be empty") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
         colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = SecondColor,
-            focusedLabelColor = SecondColor,
-            cursorColor = SecondColor
+            focusedBorderColor = BarColor,
+            focusedLabelColor = BarColor,
+            cursorColor = BarColor
         )
     )
     viewModel.dd = text

@@ -25,10 +25,6 @@ private const val TAG = "LoginViewModel"
 @HiltViewModel
 class AppViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
 
-    fun test() {
-        getApplication<Application>().getString(R.string.app_name)
-    }
-
     private val _isLoggedIn = mutableStateOf(false)
     val isLoggedIn: State<Boolean> = _isLoggedIn
 
@@ -130,7 +126,7 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
     val doc: MutableList<String> = _doc
 
     private val _eventID = mutableListOf<String>()
-    val evetId: MutableList<String> = _eventID
+    val eventId: MutableList<String> = _eventID
 
     private val _photoUrl = mutableListOf<String>()
     val photoUrl: MutableList<String> = _photoUrl
@@ -152,7 +148,4 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
 
     private val _userName = String()
     var userName: String = _userName
-
-    private val _uid = String()
-    var uid: String = _uid
 }

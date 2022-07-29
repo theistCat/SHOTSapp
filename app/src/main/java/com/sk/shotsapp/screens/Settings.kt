@@ -27,7 +27,7 @@ import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 @Composable
 fun SettingScreen(viewModel: AppViewModel, navController: NavController) {
-    Column() {
+    Column {
         LogoutButton(viewModel, navController)
         if (viewModel.isLoggedIn.value) {
             DeleteUserButton(viewModel, navController)
