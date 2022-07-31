@@ -152,9 +152,12 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
                     elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
                     icon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_create_rounded),
+                            painter = painterResource(id = R.drawable.ic_plus),
                             contentDescription = "",
-                            tint = BarColor
+                            tint = BarColor,
+                            modifier = Modifier
+//                                .size(20.dp)
+                                .padding(4.dp)
                         )
                     },
                     text = { Text(text = "Add Event", fontSize = 24.sp, color = BarColor) }

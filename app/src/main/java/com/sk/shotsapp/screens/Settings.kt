@@ -2,13 +2,8 @@ package com.sk.shotsapp.screens
 
 import android.content.ContentValues.TAG
 import android.util.Log
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,10 +22,16 @@ import com.sk.shotsapp.ui.theme.ifDarkTheme
 
 @Composable
 fun SettingScreen(viewModel: AppViewModel, navController: NavController) {
-    Column {
-        LogoutButton(viewModel, navController)
-        if (viewModel.isLoggedIn.value) {
-            DeleteUserButton(viewModel, navController)
+    Scaffold(topBar = {
+        SettingsBackIcon(navControllerMain = navController)
+    }) {
+        Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.fillMaxSize()) {
+            Row {
+                if (viewModel.isLoggedIn.value) {
+                    LogoutButton(viewModel, navController)
+                    DeleteUserButton(viewModel, navController)
+                }
+            }
         }
     }
 }
@@ -39,26 +40,21 @@ fun SettingScreen(viewModel: AppViewModel, navController: NavController) {
 fun LogoutButton(viewModel: AppViewModel, navController: NavController) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 40.dp),
+//            .fillMaxWidth()
+            .padding(top = 40.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
             onClick = {
                 viewModel.signOut()
                 navController.navigate("profile")
-            },
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = BarColor,
-                contentColor = Color.White
-            )
+            }, colors = ButtonDefaults.buttonColors(
+                backgroundColor = BarColor, contentColor = Color.White
+            ),
+            elevation = ButtonDefaults.elevation(0.dp)
         ) {
             Text(
-                text = if (viewModel.isLoggedIn.value) {
-                    stringResource(R.string.log_out)
-                } else {
-                    "back"
-                },
+                text = stringResource(R.string.log_out),
                 modifier = Modifier.padding(end = 4.dp),
                 fontSize = 20.sp
             )
@@ -72,33 +68,29 @@ fun LogoutButton(viewModel: AppViewModel, navController: NavController) {
 fun DeleteUserButton(viewModel: AppViewModel, navController: NavController) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 40.dp),
+//            .fillMaxWidth()
+            .padding(top = 40.dp, start = 16.dp, end = 16.dp, bottom = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Button(
             onClick = {
                 val user = Firebase.auth.currentUser!!
 
-                user.delete()
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            Log.d(TAG, "User account deleted.")
-                        }
+                user.delete().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d(TAG, "User account deleted.")
                     }
+                }
                 viewModel.signOut()
                 navController.navigate("profile")
-            },
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = Color.Red,
-                contentColor = ifDarkTheme(true)
-            )
+            }, colors = ButtonDefaults.buttonColors(
+                backgroundColor = Color.Red, contentColor = ifDarkTheme(true)
+            ),
+            elevation = ButtonDefaults.elevation(0.dp)
         ) {
 
             Text(
-                text = "Delete account",
-                modifier = Modifier.padding(end = 4.dp),
-                fontSize = 20.sp
+                text = "Delete account", modifier = Modifier.padding(end = 4.dp), fontSize = 20.sp
             )
 
 //            Icon(painter = painterResource(id = R.drawable.ic_exit), contentDescription = null)

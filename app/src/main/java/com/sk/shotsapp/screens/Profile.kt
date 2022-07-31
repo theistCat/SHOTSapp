@@ -7,14 +7,15 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.*
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -28,7 +29,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
-import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.BarColor
 
 @Composable
@@ -83,10 +83,7 @@ fun WelcomeScreen(viewModel: AppViewModel, navController: NavController) {
 
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
         Column(Modifier.fillMaxWidth()) {
-            Text(
-                text = "Welcome HOME!", fontSize = 30.sp,
-                textAlign = TextAlign.Center
-            )
+            Text(text = "My Events", fontSize = 30.sp, modifier = Modifier.padding(8.dp))
             MyEvents(viewModel = viewModel, navController = navController)
         }
     }
@@ -131,9 +128,9 @@ fun MyEvents(viewModel: AppViewModel, navController: NavController) {
 @Composable
 fun ProfileTopBar(navControllerMain: NavController, loginViewModel: AppViewModel) {
     Box(modifier = Modifier.fillMaxWidth()) {
-        Title(
-            whichScreen = if (loginViewModel.isLoggedIn.value) loginViewModel.userName else Screen.Profile.label
-        )
+//        Title(
+//            whichScreen = if (loginViewModel.isLoggedIn.value) loginViewModel.userName else Screen.Profile.label
+//        )
         SettingsIcon(navControllerMain = navControllerMain)
     }
 }
@@ -142,12 +139,12 @@ fun ProfileTopBar(navControllerMain: NavController, loginViewModel: AppViewModel
 fun SettingsIcon(navControllerMain: NavController) {
     Box(modifier = Modifier.fillMaxWidth()) {
         Icon(
-            painter = painterResource(id = R.drawable.ic_settings),
+            painter = painterResource(id = R.drawable.ic_bars),
             contentDescription = "Profile Icon",
             modifier = Modifier
-                .padding(top = 8.dp, end = 8.dp)
-                .size(30.dp)
-                .clip(CircleShape)
+                .padding(top = 16.dp, end = 16.dp)
+                .size(35.dp)
+//                .clip(CircleShape)
 //                .border(BorderStroke(2.dp, Color.Magenta), shape = CircleShape)
                 .align(Alignment.CenterEnd)
                 .clickable { navControllerMain.navigate("settings") },
@@ -158,18 +155,42 @@ fun SettingsIcon(navControllerMain: NavController) {
 }
 
 @Composable
-fun Avatar(loginViewModel: AppViewModel) {
-    Image(
-        painter = if (loginViewModel.isLoggedIn.value && Firebase.auth.currentUser?.photoUrl != null) rememberAsyncImagePainter(
-            Firebase.auth.currentUser?.photoUrl
+fun SettingsBackIcon(navControllerMain: NavController) {
+    Box(modifier = Modifier.fillMaxWidth()) {
+        Icon(
+            painter = painterResource(id = R.drawable.ic_asterisk),
+            contentDescription = "Profile Icon",
+            modifier = Modifier
+                .padding(top = 16.dp, end = 16.dp)
+                .size(35.dp)
+//                .border(BorderStroke(2.dp, Color.Magenta), shape = CircleShape)
+                .align(Alignment.CenterEnd)
+                .clickable { navControllerMain.navigate("profile") },
+//            tint = ifDarkTheme(status = false)
+            tint = BarColor
         )
-        else painterResource(id = R.drawable.selyn_cat),
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(100.dp),
-        contentDescription = "",
-        contentScale = ContentScale.Fit,
-        alignment = Alignment.Center
-    )
+    }
+}
 
+@Composable
+fun Avatar(viewModel: AppViewModel) {
+    Box(modifier = Modifier.padding(24.dp)) {
+        Row {
+            Image(
+                painter = if (viewModel.isLoggedIn.value && Firebase.auth.currentUser?.photoUrl != null) rememberAsyncImagePainter(
+                    Firebase.auth.currentUser?.photoUrl
+                )
+                else painterResource(id = R.drawable.selyn_cat),
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(CircleShape),
+                contentDescription = "",
+                contentScale = ContentScale.Fit,
+                alignment = Alignment.Center
+            )
+            Column {
+                Text(text = viewModel.userName, fontSize = 35.sp, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
+            }
+        }
+    }
 }

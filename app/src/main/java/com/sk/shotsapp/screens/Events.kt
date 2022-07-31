@@ -88,7 +88,7 @@ fun Title(whichScreen: String) {
         Text(
             text = whichScreen,
             textAlign = TextAlign.Center,
-            fontSize = 40.sp,
+            fontSize = 30.sp,
             modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
             color = BarColor
         )
@@ -105,9 +105,7 @@ fun EventCard(
     navController: NavController
 ) {
     val context = LocalContext.current
-    Card(
-
-    ) {
+    Card{
         Row(
             Modifier
                 .padding(16.dp)
