@@ -17,18 +17,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.MyTypography
 import java.util.*
+import kotlin.math.absoluteValue
 
 @Composable
 fun CreateAccount(viewModel: AppViewModel, navController: NavController) {
 
     viewModel.isBottomBarEnabled.value = false
     Scaffold(topBar = { Title(whichScreen = "Create Account") }) {
-        val route = "Welcome"
 
         Column {
             DisplayName(viewModel = viewModel)
@@ -36,7 +37,7 @@ fun CreateAccount(viewModel: AppViewModel, navController: NavController) {
             PasswordFieldChange(viewModel = viewModel)
 //        PasswordFieldChangeRetype(viewModel = viewModel)
 //            PasswordField(viewModel = viewModel)
-            DatePickerView()
+            DatePickerView(viewModel)
 //            SaveProfile(viewModel = viewModel, navController = navController)
             NextBtn {
                 if (viewModel.fromScreen == "login") {
@@ -44,7 +45,7 @@ fun CreateAccount(viewModel: AppViewModel, navController: NavController) {
                 } else {
                     viewModel.createUserWithEmailAndPassword()
                 }
-                navController.navigate(route)
+                navController.navigate("profile")
             }
         }
     }
@@ -61,7 +62,7 @@ fun NextBtn(action: () -> Unit) {
 }
 
 @Composable
-fun DatePickerView() {
+fun DatePickerView(viewModel: AppViewModel) {
     // Declaring integer values
     // for year, month and day
     val mYear: Int
@@ -87,30 +88,32 @@ fun DatePickerView() {
     val mDatePickerDialog = DatePickerDialog(
         LocalContext.current, { _: DatePicker, mYear: Int, mMonth: Int, mDayOfMonth: Int ->
             mDate.value = "$mDayOfMonth/${mMonth + 1}/$mYear"
+//            viewModel.setUsersAge((Calendar.getInstance().get(Calendar.YEAR) - mYear).toString())
         }, mYear, mMonth, mDay
     )
+
+
 
     Box(modifier = Modifier
         .fillMaxWidth()
         .wrapContentSize(Alignment.TopStart)
         .padding(top = 10.dp)
-        .border(0.5.dp, MaterialTheme.colors.onSurface.copy(alpha = 0.5f))
         .clickable {
             mDatePickerDialog.show()
         }) {
-        Text(
-            text = mDate.value ?: "Date Picker",
-            color = BarColor,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                text = "Date Picker: ${mDate.value}",
+                color = BarColor,
+            )
 
-        Icon(
-            painter = painterResource(id = R.drawable.ic_calendar),
-            contentDescription = null,
-            modifier = Modifier.size(20.dp, 20.dp),
-            tint = BarColor
-        )
-
+            Icon(
+                painter = painterResource(id = R.drawable.ic_calendar),
+                contentDescription = null,
+                modifier = Modifier.size(20.dp, 20.dp),
+                tint = BarColor
+            )
+        }
 
     }
 }

@@ -4,17 +4,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -33,11 +28,12 @@ fun ChangeAccountInfo(viewModel: AppViewModel, navController: NavController) {
     viewModel.isBottomBarEnabled.value = false
 
     Scaffold(topBar = { Title(whichScreen = "Change Account Info") }) {
-        Column() {
+        Column {
             DisplayName(viewModel = viewModel)
             Email(viewModel = viewModel)
             PasswordFieldChange(viewModel = viewModel)
             PasswordFieldChangeRetype(viewModel = viewModel)
+            DatePickerView(viewModel)
             SaveProfile(viewModel = viewModel, navController = navController, user!!)
         }
     }
@@ -128,13 +124,16 @@ fun PasswordFieldChangeRetype(viewModel: AppViewModel) {
 fun SaveProfile(viewModel: AppViewModel, navController: NavController, user: FirebaseUser) {
     Button(
         onClick = {
-            if (viewModel.password.value == viewModel.passwordRetype.value && viewModel.passwordRetype.value.isNotEmpty() && viewModel.password.value.isNotEmpty()) {
+            if (viewModel.usersName.value != "") {
                 viewModel.isError.value = false
                 user.updateProfile(userProfileChangeRequest {
                     displayName = viewModel.usersName.value
-                }).addOnSuccessListener { }
-                user.updatePassword(viewModel.passwordRetype.value).addOnSuccessListener { }
-                navController.navigate("profile")
+                }).addOnSuccessListener { navController.navigate("profile") }
+            }
+            if (viewModel.password.value == viewModel.passwordRetype.value && viewModel.passwordRetype.value.isNotEmpty() && viewModel.password.value.isNotEmpty()) {
+                viewModel.isError.value = false
+                user.updatePassword(viewModel.passwordRetype.value)
+                    .addOnSuccessListener { navController.navigate("profile") }
             } else viewModel.isError.value = true
         },
         colors = ButtonDefaults.buttonColors(backgroundColor = BarColor, contentColor = Color.White)

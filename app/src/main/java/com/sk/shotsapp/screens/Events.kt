@@ -147,7 +147,7 @@ fun EventCard(
                             }.addOnFailureListener { exception ->
                                 Log.w(TAG, "Error deleting document.", exception)
                             }
-                        navController.navigate("Welcome")
+                        navController.navigate("home")
                     })
             }
         }

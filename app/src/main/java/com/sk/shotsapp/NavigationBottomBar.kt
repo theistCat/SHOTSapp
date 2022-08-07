@@ -69,7 +69,15 @@ fun NaviG(viewModel: AppViewModel) {
             startDestination = "home",
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable("profile") { Profile(viewModel, navControllerMain) }
+//            val startDestination = if (viewModel.isLoggedIn.value) "Welcome" else "Login"
+
+            composable("profile") {
+                if (viewModel.isLoggedIn.value) Profile(
+                    viewModel,
+                    navControllerMain
+                )
+                else LoginScreen(viewModel = viewModel, navController = navControllerMain)
+            }
             composable("home") { HomeScreen(navControllerMain, viewModel) }
 //            composable("events") { EventScreen(viewModel) }
             composable("chat") { ChatScreen() }
@@ -80,6 +88,17 @@ fun NaviG(viewModel: AppViewModel) {
             composable("settings") { SettingScreen(viewModel, navControllerMain) }
             composable("changeAccount") { ChangeAccountInfo(viewModel, navControllerMain) }
             composable("createAccount") { CreateAccount(viewModel, navControllerMain) }
+            composable(route = "Login") {
+                viewModel.setError("")
+                LoginScreen(
+                    viewModel = viewModel, navControllerMain
+                )
+            }
+            composable(route = "Sign in with Google") {
+                viewModel.setError("")
+                EmailLoginScreen(viewModel, navControllerMain)
+            }
+//            composable(route = "Welcome") { WelcomeScreen(viewModel, navControllerMain) }
 
             /*...*/
         }

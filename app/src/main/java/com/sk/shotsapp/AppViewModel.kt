@@ -43,6 +43,9 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
     private val _usersName = mutableStateOf("")
     val usersName: State<String> = _usersName
 
+    private val _usersAge = mutableStateOf("")
+    val usersAge: State<String> = _usersAge
+
     // Setters
     fun setUserEmail(email: String) {
         _userEmail.value = email
@@ -58,6 +61,10 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
 
     fun setUsersName(usersName: String) {
         _usersName.value = usersName
+    }
+
+    fun setUsersAge(usersAge: String) {
+        _usersAge.value = usersAge
     }
 
     fun setError(error: String) {

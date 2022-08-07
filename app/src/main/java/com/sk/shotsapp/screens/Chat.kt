@@ -11,12 +11,6 @@ import com.sk.shotsapp.Screen
 fun ChatScreen() {
     Scaffold(topBar = { Title(Screen.Chat.label) }) {
 
-        Firebase.auth.currentUser?.updatePassword("FuCkY0u_")?.addOnSuccessListener {
-            Firebase.auth.currentUser?.updateProfile(userProfileChangeRequest {
-                displayName = "Sam Collinss"
-            })
-        }
-
         print(it)
     }
 }

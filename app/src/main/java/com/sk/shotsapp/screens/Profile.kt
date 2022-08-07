@@ -2,19 +2,13 @@
 
 package com.sk.shotsapp.screens
 
-import android.content.ContentValues
-import android.util.Log
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
@@ -24,19 +18,16 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
-import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -44,113 +35,108 @@ import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.MyTypography
-import kotlinx.coroutines.launch
-import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
-fun Profile(loginViewModel: AppViewModel, navControllerMain: NavController) {
-    loginViewModel.isBottomBarEnabled.value = true
+fun Profile(viewModel: AppViewModel, navControllerMain: NavHostController) {
+    viewModel.isBottomBarEnabled.value = true
     Scaffold(topBar = {
         ProfileTopBar(
-            navControllerMain = navControllerMain, loginViewModel = loginViewModel
+            navControllerMain = navControllerMain, loginViewModel = viewModel
         )
     }) {
-
-        val navController = rememberNavController()
         Column(Modifier.fillMaxSize()) {
-            if (loginViewModel.isLoggedIn.value) Avatar(loginViewModel)
-            NavigateBetweenScreen(
-                navController = navController, loginViewModel = loginViewModel, navControllerMain
-            )
+            viewModel.userName =
+                if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName.toString()
+                else Firebase.auth.currentUser?.email?.dropLast(10).toString()
+
+            Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+                Column(Modifier.fillMaxWidth()) {
+                    Avatar(viewModel = viewModel)
+                    Text(
+                        text = "Interests",
+                        fontSize = MyTypography.h4.fontSize,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Interests(
+                        interests = mutableListOf(
+                            "music",
+                            "sex",
+                            "cooking",
+                            "dancing",
+                            "fun",
+                            "travelling",
+                            "art",
+                            "coffee",
+                            "tea",
+                            "sport",
+                            "business",
+                            "poems",
+                            "games"
+                        )
+                    )
+                }
+            }
         }
         print(it)
     }
 }
 
-@Composable
-fun NavigateBetweenScreen(
-    navController: NavHostController,
-    loginViewModel: AppViewModel,
-    navControllerMain: NavController
+//@Composable
+//fun NavigateBetweenScreen(
+//    loginViewModel: AppViewModel,
+//    navControllerMain: NavHostController
 
-    ) {
-    val startDestination = if (loginViewModel.isLoggedIn.value) "Welcome" else "Login"
+//    ) {
+//    val startDestination = if (loginViewModel.isLoggedIn.value) "Welcome" else "Login"
 
-    NavHost(navController = navController, startDestination = startDestination) {
-        composable(route = "Login") {
-            loginViewModel.setError("")
-            LoginScreen(
-                viewModel = loginViewModel, navControllerMain
-            )
-        }
-        composable(route = "Sign in with Google") {
-            loginViewModel.setError("")
-            EmailLoginScreen(loginViewModel, navController)
-        }
-        composable(route = "Welcome") { WelcomeScreen(loginViewModel, navControllerMain) }
+//    NavHost(navController = navControllerMain, startDestination = startDestination) {
+//        composable(route = "Login") {
+//            loginViewModel.setError("")
+//            LoginScreen(
+//                viewModel = loginViewModel, navControllerMain
+//            )
+//        }
+//        composable(route = "Sign in with Google") {
+//            loginViewModel.setError("")
+//            EmailLoginScreen(loginViewModel, navControllerMain)
+//        }
+//        composable(route = "Welcome") { WelcomeScreen(loginViewModel, navControllerMain) }
+//        composable("createAccount") { CreateAccount(loginViewModel, navController, navControllerMain) }
 
-    }
-}
+//    }
+//}
 
-@Composable
-fun WelcomeScreen(viewModel: AppViewModel, navController: NavController) {
-    viewModel.userName =
-        if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName.toString()
-        else Firebase.auth.currentUser?.email?.dropLast(10).toString()
-
-    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-        Column(Modifier.fillMaxWidth()) {
-            Text(
-                text = "Interests",
-                fontSize = MyTypography.h4.fontSize,
-                modifier = Modifier.padding(16.dp)
-            )
-            Interests(
-                interests = mutableListOf(
-                    "music",
-                    "sex",
-                    "cooking",
-                    "dancing",
-                    "fun",
-                    "travelling",
-                    "art",
-                    "coffee",
-                    "tea",
-                    "sport",
-                    "business",
-                    "poems",
-                    "games"
-                )
-            )
-        }
-    }
-}
-
-//fun <T> LazyListScope.gridItems(
-//    data: List<T>,
-//    columnCount: Int,
-//    modifier: Modifier,
-//    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
-//    itemContent: @Composable BoxScope.(T) -> Unit,
-//) {
-//    val size = data.count()
-//    val rows = if (size == 0) 0 else 1 + (size - 1) / columnCount
-//    items(rows, key = { it.hashCode() }) { rowIndex ->
-//        Row(
-//            horizontalArrangement = horizontalArrangement, modifier = modifier
-//        ) {
-//            for (columnIndex in 0 until columnCount) {
-//                val itemIndex = rowIndex * columnCount + columnIndex
-//                if (itemIndex < size) {
-//                    Box(
-//                        modifier = Modifier.weight(1F, fill = true), propagateMinConstraints = true
-//                    ) {
-//                        itemContent(data[itemIndex])
-//                    }
-//                } else {
-//                    Spacer(Modifier.weight(1F, fill = true))
-//                }
-//            }
+//@Composable
+//fun WelcomeScreen(viewModel: AppViewModel, navController: NavController) {
+//    viewModel.userName =
+//        if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName.toString()
+//        else Firebase.auth.currentUser?.email?.dropLast(10).toString()
+//
+//    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
+//        Column(Modifier.fillMaxWidth()) {
+//            Avatar(viewModel = viewModel)
+//            Text(
+//                text = "Interests",
+//                fontSize = MyTypography.h4.fontSize,
+//                modifier = Modifier.padding(16.dp)
+//            )
+//            Interests(
+//                interests = mutableListOf(
+//                    "music",
+//                    "sex",
+//                    "cooking",
+//                    "dancing",
+//                    "fun",
+//                    "travelling",
+//                    "art",
+//                    "coffee",
+//                    "tea",
+//                    "sport",
+//                    "business",
+//                    "poems",
+//                    "games"
+//                )
+//            )
 //        }
 //    }
 //}
@@ -278,7 +264,7 @@ fun Avatar(viewModel: AppViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "age: $",
+                        text = "age: ${viewModel.usersAge.value}",
                         fontSize = MyTypography.h5.fontSize,
                         modifier = Modifier.padding(16.dp)
                     )
