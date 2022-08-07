@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import androidx.navigation.NavController
 import com.google.android.gms.maps.GoogleMapOptions
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.compose.*
@@ -33,6 +35,8 @@ import com.sk.shotsapp.BackNavElement
 import com.sk.shotsapp.R
 import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.BarColor
+import com.sk.shotsapp.ui.theme.MyTypography
+import com.sk.shotsapp.ui.theme.Shapes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -71,6 +75,7 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
         BottomSheetScaffold(
             topBar = { Title(whichScreen = Screen.Home.label) },
             sheetContent = {
+//                Card(shape = Shapes.small) {
                 Box(
                     Modifier
                         .fillMaxWidth()
@@ -79,18 +84,22 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
                 ) {
                     Row {
                         Icon(
-                            painter = painterResource(
-                                id = if (scaffoldState.bottomSheetState.isCollapsed && viewModel.doc.size != 0) R.drawable.ic_up_arrow else if (scaffoldState.bottomSheetState.isExpanded) R.drawable.ic_down_arrow else R.drawable.ic_dash
-                            ), contentDescription = "", modifier = Modifier.clickable(
-                                interactionSource = interactionSource, indication = null
-                            ) {
-                                if (scaffoldState.bottomSheetState.isCollapsed) scope.launch { scaffoldState.bottomSheetState.expand() }
-                                else scope.launch { scaffoldState.bottomSheetState.collapse() }
-                            }, tint = BarColor
+                            painter = painterResource(id = R.drawable.ic_dash),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .clickable(
+                                    interactionSource = interactionSource, indication = null
+                                ) {
+                                    if (scaffoldState.bottomSheetState.isCollapsed) scope.launch { scaffoldState.bottomSheetState.expand() }
+                                    else scope.launch { scaffoldState.bottomSheetState.collapse() }
+                                }
+                                .offset(y = (-16).dp),
+                            tint = Color.Gray
                         )
                     }
 
                 }
+//                }
                 viewModel.db.collection("events").get().addOnSuccessListener { result ->
                     viewModel.doc.clear()
                     viewModel.uids.clear()
@@ -119,28 +128,26 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
                                 eventId = viewModel.eventId[it],
                                 painter = viewModel.photoUrl[it],
                                 viewModel,
-                                false,
+                                deleteBtn = viewModel.uids[it] == Firebase.auth.currentUser?.uid,
                                 navController = navControllerMain
                             )
                         }
                     }
                 }
                 DefaultBackHandler(
-                    BackNavElement.default(
-                        child = modalBackNavElement(scaffoldState, scope),
-                        handler = { activity?.finish() }
-                    )
+                    BackNavElement.default(child = modalBackNavElement(
+                        scaffoldState, scope
+                    ), handler = { activity?.finish() })
                 )
 
             },
             scaffoldState = scaffoldState,
             floatingActionButton = {
-                ExtendedFloatingActionButton(
-                    onClick = {
-                        if (scaffoldState.bottomSheetState.isCollapsed) navControllerMain.navigate(
-                            Screen.Create.route
-                        )
-                    },
+                ExtendedFloatingActionButton(onClick = {
+                    if (scaffoldState.bottomSheetState.isCollapsed) navControllerMain.navigate(
+                        Screen.Create.route
+                    )
+                },
                     modifier = Modifier
                         .align(
                             Alignment.BottomEnd
@@ -152,7 +159,7 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
                     elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
                     icon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_plus),
+                            painter = painterResource(id = R.drawable.ic_create_rounded),
                             contentDescription = "",
                             tint = BarColor,
                             modifier = Modifier
@@ -160,13 +167,18 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
                                 .padding(4.dp)
                         )
                     },
-                    text = { Text(text = "Add Event", fontSize = 24.sp, color = BarColor) }
-                )
+                    text = {
+                        Text(
+                            text = "Add Event",
+                            color = BarColor,
+                            fontSize = MyTypography.body1.fontSize
+                        )
+                    })
 
             },
             floatingActionButtonPosition = FabPosition.Center,
-            sheetPeekHeight = 50.dp,
-            sheetElevation = 0.dp
+            sheetPeekHeight = 40.dp,
+            sheetElevation = 0.dp, sheetShape = RoundedCornerShape(20.dp)
         ) { innerPadding ->
             GoogleMap(contentPadding = innerPadding,
                 googleMapOptionsFactory = {
@@ -191,8 +203,7 @@ fun DefaultBackHandler(backNavElement: BackNavElement) = BackHandler { backNavEl
 
 //@OptIn(ExperimentalMaterialApi::class)
 fun modalBackNavElement(
-    state: BottomSheetScaffoldState,
-    coroutineScope: CoroutineScope
+    state: BottomSheetScaffoldState, coroutineScope: CoroutineScope
 ) = BackNavElement.needsProcessing {
     if (state.bottomSheetState.isExpanded) {
         coroutineScope.launch { state.bottomSheetState.collapse() }

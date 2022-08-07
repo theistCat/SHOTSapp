@@ -23,14 +23,21 @@ import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.BarColor
+import com.sk.shotsapp.ui.theme.Kodchasan
+import com.sk.shotsapp.ui.theme.MyTypography
 
 
 @Composable
 fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
+
     Scaffold(topBar = { Title(whichScreen = Screen.Create.label) }) {
         val db = Firebase.firestore
 
-        Column(Modifier.fillMaxSize()) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(start = 24.dp, top = 24.dp, end = 24.dp, bottom = 24.dp)
+        ) {
 
             NameOfEvent(viewModel = viewModel)
             DescriptionOfEvent(viewModel = viewModel)
@@ -79,7 +86,9 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
                 ) {
 
                     Text(
-                        text = "ADD", modifier = Modifier.padding(end = 4.dp), fontSize = 20.sp
+                        text = "Add",
+                        modifier = Modifier.padding(end = 4.dp),
+                        fontStyle = MyTypography.h5.fontStyle
                     )
 
 
@@ -95,7 +104,7 @@ fun NameOfEvent(viewModel: AppViewModel) {
     val focusManager = LocalFocusManager.current
     var text by remember { mutableStateOf("") }
 
-    OutlinedTextField(
+    TextField(
         value = text,
         onValueChange = { text = it },
         label = { Text(if (!viewModel.isError.value) "title of Event" else "field can't be empty") },
@@ -103,10 +112,12 @@ fun NameOfEvent(viewModel: AppViewModel) {
             .fillMaxWidth()
             .padding(8.dp),
         singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = BarColor,
+        isError = viewModel.isError.value,
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = BarColor,
             focusedLabelColor = BarColor,
-            cursorColor = BarColor
+            cursorColor = BarColor,
+            backgroundColor = Color.White
         ),
         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
         keyboardActions = KeyboardActions(onNext = {
@@ -120,17 +131,19 @@ fun NameOfEvent(viewModel: AppViewModel) {
 fun DescriptionOfEvent(viewModel: AppViewModel) {
     var text by remember { mutableStateOf("") }
 
-    OutlinedTextField(
+    TextField(
         value = text,
         onValueChange = { text = it },
         label = { Text(if (!viewModel.isError.value) "description for it" else "field can't be empty") },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        colors = TextFieldDefaults.outlinedTextFieldColors(
-            focusedBorderColor = BarColor,
+        isError = viewModel.isError.value,
+        colors = TextFieldDefaults.textFieldColors(
+            focusedIndicatorColor = BarColor,
             focusedLabelColor = BarColor,
-            cursorColor = BarColor
+            cursorColor = BarColor,
+            backgroundColor = Color.White,
         )
     )
     viewModel.dd = text

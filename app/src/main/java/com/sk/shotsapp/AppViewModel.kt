@@ -37,6 +37,12 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
     private val _password = mutableStateOf("")
     val password: State<String> = _password
 
+    private val _passwordRetype = mutableStateOf("")
+    val passwordRetype: State<String> = _passwordRetype
+
+    private val _usersName = mutableStateOf("")
+    val usersName: State<String> = _usersName
+
     // Setters
     fun setUserEmail(email: String) {
         _userEmail.value = email
@@ -44,6 +50,14 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
 
     fun setPassword(password: String) {
         _password.value = password
+    }
+
+    fun setPasswordRetype(passwordRetype: String) {
+        _passwordRetype.value = passwordRetype
+    }
+
+    fun setUsersName(usersName: String) {
+        _usersName.value = usersName
     }
 
     fun setError(error: String) {
@@ -148,4 +162,10 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
 
     private val _userName = String()
     var userName: String = _userName
+
+    private val _isBottomBarEnabled = mutableStateOf(true)
+    var isBottomBarEnabled: MutableState<Boolean> = _isBottomBarEnabled
+
+    private val _fromScreen = String()
+    var fromScreen: String = _fromScreen
 }

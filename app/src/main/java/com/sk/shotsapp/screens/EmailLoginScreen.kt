@@ -14,13 +14,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.ui.theme.BarColor
+import com.sk.shotsapp.ui.theme.SecondColor
 
 @Composable
 fun EmailLoginScreen(
-    viewModel: AppViewModel
+    viewModel: AppViewModel, navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -36,8 +38,10 @@ fun EmailLoginScreen(
         }
         EmailField(viewModel)
         PasswordField(viewModel)
-        ButtonEmailPasswordLogin(viewModel)
-        ButtonEmailPasswordCreate(viewModel)
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+            ButtonEmailPasswordLogin(viewModel, navController)
+            ButtonEmailPasswordCreate(viewModel,  navController)
+        }
     }
 }
 
@@ -46,16 +50,17 @@ fun EmailField(viewModel: AppViewModel) {
     val focusManager = LocalFocusManager.current
     val userEmail = viewModel.userEmail.value
 
-    OutlinedTextField(
+    TextField(
         modifier = Modifier.fillMaxWidth(),
         value = userEmail,
         label = { Text(text = stringResource(R.string.email)) },
         onValueChange = { viewModel.setUserEmail(it) },
         singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        colors = TextFieldDefaults.textFieldColors(
             focusedLabelColor = BarColor,
             cursorColor = BarColor,
-            focusedBorderColor = BarColor
+            focusedIndicatorColor = BarColor,
+            backgroundColor = Color.White
         ),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
@@ -70,30 +75,32 @@ fun EmailField(viewModel: AppViewModel) {
 fun PasswordField(viewModel: AppViewModel) {
     val password = viewModel.password.value
 
-    OutlinedTextField(
+    TextField(
         modifier = Modifier.fillMaxWidth(),
         visualTransformation = PasswordVisualTransformation(),
         value = password,
         label = { Text(text = stringResource(R.string.password)) },
         onValueChange = { viewModel.setPassword(it) },
         singleLine = true,
-        colors = TextFieldDefaults.outlinedTextFieldColors(
+        colors = TextFieldDefaults.textFieldColors(
             focusedLabelColor = BarColor,
             cursorColor = BarColor,
-            focusedBorderColor = BarColor
+            focusedIndicatorColor = BarColor,
+            backgroundColor = Color.White
         )
     )
 }
 
 @Composable
-fun ButtonEmailPasswordLogin(viewModel: AppViewModel) {
+fun ButtonEmailPasswordLogin(viewModel: AppViewModel, navController: NavController) {
     Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
         enabled = viewModel.isValidEmailAndPassword(),
         content = { Text(text = stringResource(R.string.login), color = Color.White) },
-        onClick = { viewModel.signInWithEmailAndPassword() },
+        onClick = {
+            viewModel.fromScreen = "login"
+            navController.navigate("createAccount")
+//            viewModel.signInWithEmailAndPassword()
+        },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = BarColor
         )
@@ -101,16 +108,17 @@ fun ButtonEmailPasswordLogin(viewModel: AppViewModel) {
 }
 
 @Composable
-fun ButtonEmailPasswordCreate(viewModel: AppViewModel) {
+fun ButtonEmailPasswordCreate(viewModel: AppViewModel, navController: NavController) {
     Button(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(50.dp),
         enabled = viewModel.isValidEmailAndPassword(),
         content = { Text(text = stringResource(R.string.create), color = Color.White) },
-        onClick = { viewModel.createUserWithEmailAndPassword() },
+        onClick = {
+            viewModel.fromScreen = "create"
+            navController.navigate("createAccount")
+//            viewModel.createUserWithEmailAndPassword()
+        },
         colors = ButtonDefaults.buttonColors(
-            backgroundColor = BarColor
+            backgroundColor = SecondColor
         )
     )
 }

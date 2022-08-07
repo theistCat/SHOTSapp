@@ -1,19 +1,31 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.sk.shotsapp.screens
 
 import android.content.ContentValues
 import android.util.Log
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -24,15 +36,20 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
+import com.google.android.material.chip.Chip
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.ui.theme.BarColor
+import com.sk.shotsapp.ui.theme.MyTypography
+import kotlinx.coroutines.launch
+import org.intellij.lang.annotations.JdkConstants.HorizontalAlignment
 
 @Composable
 fun Profile(loginViewModel: AppViewModel, navControllerMain: NavController) {
+    loginViewModel.isBottomBarEnabled.value = true
     Scaffold(topBar = {
         ProfileTopBar(
             navControllerMain = navControllerMain, loginViewModel = loginViewModel
@@ -43,7 +60,7 @@ fun Profile(loginViewModel: AppViewModel, navControllerMain: NavController) {
         Column(Modifier.fillMaxSize()) {
             if (loginViewModel.isLoggedIn.value) Avatar(loginViewModel)
             NavigateBetweenScreen(
-                navController = navController, loginViewModel = loginViewModel
+                navController = navController, loginViewModel = loginViewModel, navControllerMain
             )
         }
         print(it)
@@ -54,24 +71,24 @@ fun Profile(loginViewModel: AppViewModel, navControllerMain: NavController) {
 fun NavigateBetweenScreen(
     navController: NavHostController,
     loginViewModel: AppViewModel,
+    navControllerMain: NavController
 
     ) {
-    val startDestination =
-        if (loginViewModel.isLoggedIn.value) "Welcome" else "Login"
+    val startDestination = if (loginViewModel.isLoggedIn.value) "Welcome" else "Login"
 
     NavHost(navController = navController, startDestination = startDestination) {
         composable(route = "Login") {
             loginViewModel.setError("")
             LoginScreen(
-                viewModel = loginViewModel
+                viewModel = loginViewModel, navControllerMain
             )
         }
-//        loginPage(this, navController, loginViewModel)
         composable(route = "Sign in with Google") {
             loginViewModel.setError("")
-            EmailLoginScreen(loginViewModel)
+            EmailLoginScreen(loginViewModel, navController)
         }
-        composable(route = "Welcome") { WelcomeScreen(loginViewModel, navController) }
+        composable(route = "Welcome") { WelcomeScreen(loginViewModel, navControllerMain) }
+
     }
 }
 
@@ -83,54 +100,115 @@ fun WelcomeScreen(viewModel: AppViewModel, navController: NavController) {
 
     Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
         Column(Modifier.fillMaxWidth()) {
-            Text(text = "My Events", fontSize = 30.sp, modifier = Modifier.padding(8.dp))
-            MyEvents(viewModel = viewModel, navController = navController)
+            Text(
+                text = "Interests",
+                fontSize = MyTypography.h4.fontSize,
+                modifier = Modifier.padding(16.dp)
+            )
+            Interests(
+                interests = mutableListOf(
+                    "music",
+                    "sex",
+                    "cooking",
+                    "dancing",
+                    "fun",
+                    "travelling",
+                    "art",
+                    "coffee",
+                    "tea",
+                    "sport",
+                    "business",
+                    "poems",
+                    "games"
+                )
+            )
         }
     }
 }
 
+//fun <T> LazyListScope.gridItems(
+//    data: List<T>,
+//    columnCount: Int,
+//    modifier: Modifier,
+//    horizontalArrangement: Arrangement.Horizontal = Arrangement.Start,
+//    itemContent: @Composable BoxScope.(T) -> Unit,
+//) {
+//    val size = data.count()
+//    val rows = if (size == 0) 0 else 1 + (size - 1) / columnCount
+//    items(rows, key = { it.hashCode() }) { rowIndex ->
+//        Row(
+//            horizontalArrangement = horizontalArrangement, modifier = modifier
+//        ) {
+//            for (columnIndex in 0 until columnCount) {
+//                val itemIndex = rowIndex * columnCount + columnIndex
+//                if (itemIndex < size) {
+//                    Box(
+//                        modifier = Modifier.weight(1F, fill = true), propagateMinConstraints = true
+//                    ) {
+//                        itemContent(data[itemIndex])
+//                    }
+//                } else {
+//                    Spacer(Modifier.weight(1F, fill = true))
+//                }
+//            }
+//        }
+//    }
+//}
+
 @Composable
-fun MyEvents(viewModel: AppViewModel, navController: NavController) {
-    viewModel.db.collection("events").get().addOnSuccessListener { result ->
-        viewModel.doc.clear()
-        viewModel.uids.clear()
-        viewModel.photoUrl.clear()
-        viewModel.eventId.clear()
-        for (document in result) {
-            viewModel.doc.add("${document["author"]} => ${document["title"]} : ${document["description"]}")
-            viewModel.photoUrl.add(document["photoUrl"].toString())
-            viewModel.eventId.add(document.id)
-            viewModel.uids.add(document["uid"].toString())
-        }
-        viewModel.isReady.value = true
-    }.addOnFailureListener { exception ->
-        Log.w(ContentValues.TAG, "Error getting documents.", exception)
-    }
-    if (viewModel.isReady.value) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
+fun Interests(interests: List<String>) {
+    var isExpanded by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    Card(shape = RoundedCornerShape(25.dp), modifier = Modifier.padding(16.dp)) {
+        Surface(
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier
+                .animateContentSize()
+                .padding(1.dp)
+                .clickable { isExpanded = !isExpanded },
+            elevation = 1.dp
         ) {
-            items(viewModel.doc.size) { it ->
-                if (viewModel.uids[it] == Firebase.auth.currentUser?.uid)
-                    EventCard(
-                        text = viewModel.doc[it],
-                        eventId = viewModel.eventId[it],
-                        painter = viewModel.photoUrl[it],
-                        viewModel,
-                        true,
-                        navController = navController
-                    )
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                LazyVerticalGrid(
+                    columns = GridCells.Adaptive(150.dp), modifier = Modifier
+                        .height(if (isExpanded) 400.dp else 150.dp), userScrollEnabled = isExpanded
+                ) {
+                    items(interests) { interest ->
+                        Button(
+                            {},
+                            shape = RoundedCornerShape(50.dp),
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .widthIn(75.dp),
+//                            enabled = false
+                        ) {
+                            Text(text = interest, maxLines = 1)
+                        }
+                    }
+                }
+
+                Icon(
+                    painter = painterResource(id = if (isExpanded) R.drawable.ic_up_arrow else R.drawable.ic_down_arrow),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .clickable(
+                            interactionSource = interactionSource, indication = null
+                        ) {
+                            isExpanded = !isExpanded
+                        }
+//                        .padding(8.dp),
+                        .size(30.dp),
+                    tint = Color.Gray
+                )
             }
         }
     }
+
 }
 
 @Composable
 fun ProfileTopBar(navControllerMain: NavController, loginViewModel: AppViewModel) {
     Box(modifier = Modifier.fillMaxWidth()) {
-//        Title(
-//            whichScreen = if (loginViewModel.isLoggedIn.value) loginViewModel.userName else Screen.Profile.label
-//        )
         SettingsIcon(navControllerMain = navControllerMain)
     }
 }
@@ -183,13 +261,33 @@ fun Avatar(viewModel: AppViewModel) {
                 else painterResource(id = R.drawable.selyn_cat),
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .border(2.dp, Color.Gray, CircleShape),
                 contentDescription = "",
                 contentScale = ContentScale.Fit,
                 alignment = Alignment.Center
             )
             Column {
-                Text(text = viewModel.userName, fontSize = 35.sp, modifier = Modifier.padding(start = 8.dp, end = 8.dp))
+                Text(
+                    text = viewModel.userName,
+                    fontSize = MyTypography.h4.fontSize,
+                    modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(
+                        text = "age: $",
+                        fontSize = MyTypography.h5.fontSize,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                    Text(
+                        text = "sex: $",
+                        fontSize = MyTypography.h5.fontSize,
+                        modifier = Modifier.padding(16.dp)
+                    )
+                }
             }
         }
     }

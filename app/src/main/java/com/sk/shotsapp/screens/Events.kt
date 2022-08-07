@@ -23,6 +23,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.ui.theme.BarColor
+import com.sk.shotsapp.ui.theme.MyTypography
 
 //@Composable
 //fun EventScreen(
@@ -88,8 +89,8 @@ fun Title(whichScreen: String) {
         Text(
             text = whichScreen,
             textAlign = TextAlign.Center,
-            fontSize = 30.sp,
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+            fontSize = MyTypography.h5.fontSize,
+//            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
             color = BarColor
         )
     }
