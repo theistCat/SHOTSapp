@@ -46,6 +46,9 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
     private val _usersAge = mutableStateOf("")
     val usersAge: State<String> = _usersAge
 
+    private val _userSex = mutableStateOf("")
+    val userSex: State<String> = _userSex
+
     // Setters
     fun setUserEmail(email: String) {
         _userEmail.value = email
@@ -55,9 +58,9 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
         _password.value = password
     }
 
-    fun setPasswordRetype(passwordRetype: String) {
-        _passwordRetype.value = passwordRetype
-    }
+//    fun setPasswordRetype(passwordRetype: String) {
+//        _passwordRetype.value = passwordRetype
+//    }
 
     fun setUsersName(usersName: String) {
         _usersName.value = usersName
@@ -65,6 +68,10 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
 
     fun setUsersAge(usersAge: String) {
         _usersAge.value = usersAge
+    }
+
+    fun setUserSex(userSex: String) {
+        _userSex.value = userSex
     }
 
     fun setError(error: String) {
@@ -112,6 +119,7 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
             Log.d(TAG, "SignInWithEmail:success")
             _userEmail.value = ""
             _password.value = ""
+
         } else {
             _error.value = task.exception?.localizedMessage ?: "Unknown error"
             // If sign in fails, display a message to the user.
@@ -120,6 +128,7 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
         viewModelScope.launch {
             _isLoggedIn.value = getCurrentUser() != null
         }
+
     }
 
     private fun getCurrentUser(): FirebaseUser? {
@@ -161,18 +170,35 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
     private val _dd = String()
     var dd: String = _dd
 
+    private val _userName = String()
+    var userName: String = _userName
+
     private val _isError = mutableStateOf(false)
     var isError: MutableState<Boolean> = _isError
 
     private val _isReady = mutableStateOf(false)
     var isReady: MutableState<Boolean> = _isReady
 
-    private val _userName = String()
-    var userName: String = _userName
-
-    private val _isBottomBarEnabled = mutableStateOf(true)
+    private val _isBottomBarEnabled = mutableStateOf(false)
     var isBottomBarEnabled: MutableState<Boolean> = _isBottomBarEnabled
 
-    private val _fromScreen = String()
-    var fromScreen: String = _fromScreen
+    private val _isNewUser = mutableStateOf(false)
+    val isNewUser: MutableState<Boolean> = _isNewUser
+
+    private val _name = mutableListOf<String>()
+    var name: MutableList<String> = _name
+
+    private val _age = mutableListOf<String>()
+    var age: MutableList<String> = _age
+
+    private val _sex = mutableListOf<String>()
+    var sex: MutableList<String> = _sex
+
+    private val _email = mutableListOf<String>()
+    var email: MutableList<String> = _email
+
+    private val _userID = mutableListOf<String>()
+    val userId: MutableList<String> = _userID
+//    private val _fromScreen = String()
+//    var fromScreen: String = _fromScreen
 }

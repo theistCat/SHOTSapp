@@ -2,7 +2,10 @@ package com.sk.shotsapp
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.*
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -15,80 +18,83 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.sk.shotsapp.screens.*
-import com.sk.shotsapp.ui.theme.Shapes
 
 @Composable
-fun NaviG(viewModel: AppViewModel) {
+fun NaviG(viewModel: AppViewModel, fusedLocationProviderClient: FusedLocationProviderClient) {
     val navControllerMain = rememberNavController()
     val items = listOf(
 //        Screen.Events,
-        Screen.Chat,
-        Screen.Home,
-        Screen.Profile
+        Screen.Chat, Screen.Home, Screen.Profile
     )
-    Scaffold(
-        bottomBar = {
-            if (viewModel.isBottomBarEnabled.value) {
-                BottomNavigation(
+    Scaffold(bottomBar = {
+        if (viewModel.isBottomBarEnabled.value) {
+            BottomNavigation(
 //                backgroundColor = ifDarkTheme(status = true)
-                    backgroundColor = Color.White
-                ) {
-                    val navBackStackEntry by navControllerMain.currentBackStackEntryAsState()
-                    val currentDestination = navBackStackEntry?.destination
-                    items.forEach { screen ->
-                        BottomNavigationItem(
-                            icon = {
-                                Icon(
-                                    painter = painterResource(id = screen.resourceId),
+                backgroundColor = Color.White
+            ) {
+                val navBackStackEntry by navControllerMain.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination
+                items.forEach { screen ->
+                    BottomNavigationItem(icon = {
+                        Icon(
+                            painter = painterResource(id = screen.resourceId),
 //                                tint = BarColor,
-                                    contentDescription = screen.route,
-                                    modifier = Modifier.size(if (screen.route == "home") 45.dp else 30.dp)
-                                )
-                            },
-//                        label = { Text(screen.label) },
-                            selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
-                            onClick = {
-                                navControllerMain.navigate(screen.route) {
-                                    popUpTo(navControllerMain.graph.findStartDestination().id) {
-                                        saveState = false
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            }
+                            contentDescription = screen.route,
+                            modifier = Modifier.size(if (screen.route == "home") 45.dp else 30.dp)
                         )
-                    }
-
+                    },
+//                        label = { Text(screen.label) },
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                        onClick = {
+                            navControllerMain.navigate(screen.route) {
+                                popUpTo(navControllerMain.graph.findStartDestination().id) {
+                                    saveState = false
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        })
                 }
+
             }
         }
-    ) { innerPadding ->
+    }) { innerPadding ->
+//        viewModel.db.collection("users").get().addOnSuccessListener { result ->
+//            viewModel.email.clear()
+//            viewModel.name.clear()
+//            viewModel.age.clear()
+//            viewModel.sex.clear()
+//            for (document in result) {
+//                viewModel.sex.add(document["sex"].toString())
+//                viewModel.age.add(document["age"].toString())
+//                viewModel.email.add(document["email"].toString())
+//                viewModel.name.add(document["name"].toString())
+//            }
+//        }
         NavHost(
             navController = navControllerMain,
-            startDestination = "home",
+            startDestination = if (viewModel.isLoggedIn.value) "profile" else "Login",
             modifier = Modifier.padding(innerPadding)
         ) {
-//            val startDestination = if (viewModel.isLoggedIn.value) "Welcome" else "Login"
-
-            composable("profile") {
-                if (viewModel.isLoggedIn.value) Profile(
-                    viewModel,
-                    navControllerMain
-                )
-                else LoginScreen(viewModel = viewModel, navController = navControllerMain)
+            composable("profile") { Profile(viewModel, navControllerMain) }
+            composable("home") {
+                if (viewModel.isNewUser.value) ChangeAccountInfo(
+                    viewModel = viewModel, navController = navControllerMain
+                ) else HomeScreen(navControllerMain, viewModel, fusedLocationProviderClient)
             }
-            composable("home") { HomeScreen(navControllerMain, viewModel) }
 //            composable("events") { EventScreen(viewModel) }
             composable("chat") { ChatScreen() }
             composable("create") {
-                if (viewModel.isLoggedIn.value) CreateNew(viewModel, navControllerMain)
-                else Profile(viewModel, navControllerMain)
+//                if (viewModel.isLoggedIn.value)
+                CreateNew(viewModel, navControllerMain)
+//                else
+//                    Profile(viewModel, navControllerMain)
             }
             composable("settings") { SettingScreen(viewModel, navControllerMain) }
             composable("changeAccount") { ChangeAccountInfo(viewModel, navControllerMain) }
-            composable("createAccount") { CreateAccount(viewModel, navControllerMain) }
-            composable(route = "Login") {
+            composable("Login") {
                 viewModel.setError("")
                 LoginScreen(
                     viewModel = viewModel, navControllerMain

@@ -1,11 +1,13 @@
 @file:OptIn(
     ExperimentalMaterialApi::class, ExperimentalMaterialApi::class
 )
+@file:Suppress("NAME_SHADOWING")
 
 package com.sk.shotsapp.screens
 
 import android.app.Activity
 import android.content.ContentValues
+import android.location.Location
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -21,52 +23,54 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.google.android.gms.maps.GoogleMapOptions
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.CameraPosition
-import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.maps.android.compose.*
-import com.sk.shotsapp.AppViewModel
-import com.sk.shotsapp.BackNavElement
+import com.sk.shotsapp.*
 import com.sk.shotsapp.R
-import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.MyTypography
-import com.sk.shotsapp.ui.theme.Shapes
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 
 @Composable
-fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
+fun HomeScreen(
+    navControllerMain: NavController,
+    viewModel: AppViewModel,
+    fusedLocationProviderClient: FusedLocationProviderClient
+) {
+    var currentLocation by remember { mutableStateOf(LocationUtils.getDefaultLocation()) }
+
     viewModel.db = Firebase.firestore
     val activity = (LocalContext.current as? Activity)
+    viewModel.isBottomBarEnabled.value = true
 
-    val mapProperties by remember {
-        mutableStateOf(
-            MapProperties(
-                maxZoomPreference = 16f,
-                minZoomPreference = 8f,
-            )
-        )
-    }
-    val mapUiSettings by remember {
-        mutableStateOf(
-            MapUiSettings(
-                mapToolbarEnabled = false,
-                zoomControlsEnabled = false,
-                myLocationButtonEnabled = true
-            )
-        )
-    }
-    val tashkent = LatLng(41.2995, 69.2401)
-    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-        position = CameraPosition.fromLatLngZoom(tashkent, 13f)
-    }
+//    val mapProperties by remember {
+//        mutableStateOf(
+//            MapProperties(
+//                maxZoomPreference = 16f,
+//                minZoomPreference = 8f,
+//            )
+//        )
+//    }
+//    val mapUiSettings by remember {
+//        mutableStateOf(
+//            MapUiSettings(
+//                mapToolbarEnabled = false,
+//                zoomControlsEnabled = false,
+//                myLocationButtonEnabled = true
+//            )
+//        )
+//    }
+//    val tashkent = LatLng(41.2995, 69.2401)
+//    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
+//        position = CameraPosition.fromLatLngZoom(tashkent, 13f)
+//    }
 
     Box(Modifier.fillMaxSize()) {
         val scope = rememberCoroutineScope()
@@ -179,24 +183,130 @@ fun HomeScreen(navControllerMain: NavController, viewModel: AppViewModel) {
             floatingActionButtonPosition = FabPosition.Center,
             sheetPeekHeight = 40.dp,
             sheetElevation = 0.dp, sheetShape = RoundedCornerShape(20.dp)
-        ) { innerPadding ->
-            GoogleMap(contentPadding = innerPadding,
-                googleMapOptionsFactory = {
-                    GoogleMapOptions().mapId("map01").zoomControlsEnabled(false)
-                        .mapToolbarEnabled(false).mapType(MapType.NORMAL.value)
-                        .camera(cameraPositionState.position)
-                },
-                properties = mapProperties,
-                uiSettings = mapUiSettings,
-                cameraPositionState = cameraPositionState,
-                onMapLoaded = {
+        ) {
+            val cameraPositionState = rememberCameraPositionState()
+            cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                LocationUtils.getPosition(currentLocation), 12f
+            )
 
-                }) {
+            var requestLocationUpdate by remember { mutableStateOf(true) }
 
+            MyGoogleMap(
+                currentLocation,
+                cameraPositionState,
+                onGpsIconClick = {
+                    requestLocationUpdate = true
+                    Log.w("LOL", "its working")
+                }
+            )
+
+            if (requestLocationUpdate) {
+                LocationPermissionsAndSettingDialogs(
+                    updateCurrentLocation = {
+                        requestLocationUpdate = false
+                        LocationUtils.requestLocationResultCallback(fusedLocationProviderClient) { locationResult ->
+
+                            locationResult.lastLocation?.let { location ->
+                                currentLocation = location
+                            }
+
+                        }
+                    }
+                )
+            }
+
+//            GoogleMap(contentPadding = innerPadding,
+////                googleMapOptionsFactory = {
+////                    GoogleMapOptions().mapId("map01").zoomControlsEnabled(false)
+////                        .mapToolbarEnabled(false).mapType(MapType.NORMAL.value)
+////                        .camera(cameraPositionState.position)
+////                },
+//                properties = mapProperties,
+//                uiSettings = mapUiSettings,
+//                cameraPositionState = cameraPositionState,
+//                onMapLoaded = {
+//
+//                }) {
+//
+//            }
+        }
+    }
+}
+
+@Composable
+private fun MyGoogleMap(
+    currentLocation: Location,
+    cameraPositionState: CameraPositionState,
+    onGpsIconClick: () -> Unit
+) {
+    Box {
+        val mapUiSettings by remember {
+            mutableStateOf(
+                MapUiSettings(zoomControlsEnabled = false)
+            )
+        }
+
+        GoogleMap(
+            modifier = Modifier.fillMaxSize(),
+            cameraPositionState = cameraPositionState,
+            uiSettings = mapUiSettings,
+        ) {
+            Marker(
+                state = MarkerState(position = LocationUtils.getPosition(currentLocation)),
+                title = "Current Position"
+            )
+        }
+
+        GpsIconButton(onIconClick = onGpsIconClick)
+
+//        DebugOverlay(cameraPositionState)
+    }
+}
+
+@Composable
+private fun GpsIconButton(onIconClick: () -> Unit) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Bottom,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End
+        ) {
+            FloatingActionButton(onClick = onIconClick, modifier = Modifier.offset(x = (-10).dp, y = (-200).dp).size(40.dp), backgroundColor = Color.White) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_location),
+                    contentDescription = ""
+                )
             }
         }
     }
 }
+
+
+//@Composable
+//private fun DebugOverlay(
+//    cameraPositionState: CameraPositionState,
+//) {
+//    Column(
+//        modifier = Modifier.fillMaxSize(),
+//        verticalArrangement = Arrangement.Bottom,
+//    ) {
+//        val moving =
+//            if (cameraPositionState.isMoving) "moving" else "not moving"
+//        Text(
+//            text = "Camera is $moving",
+//            fontWeight = FontWeight.Bold,
+//            color = Color.DarkGray
+//        )
+//        Text(
+//            text = "Camera position is ${cameraPositionState.position}",
+//            fontWeight = FontWeight.Bold,
+//            color = Color.DarkGray
+//        )
+//    }
+//}
+
 
 @Composable
 fun DefaultBackHandler(backNavElement: BackNavElement) = BackHandler { backNavElement.tryGoBack() }

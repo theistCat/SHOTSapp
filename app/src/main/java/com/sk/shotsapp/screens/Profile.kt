@@ -24,9 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -44,10 +41,34 @@ fun Profile(viewModel: AppViewModel, navControllerMain: NavHostController) {
             navControllerMain = navControllerMain, loginViewModel = viewModel
         )
     }) {
+//        viewModel.db.collection("users").get().addOnSuccessListener { result ->
+//            viewModel.email.clear()
+//            viewModel.name.clear()
+//            viewModel.age.clear()
+//            viewModel.sex.clear()
+//            viewModel.userId.clear()
+//            for (document in result) {
+//                viewModel.sex.add(document["sex"].toString())
+//                viewModel.age.add(document["age"].toString())
+//                viewModel.email.add(document["email"].toString())
+//                viewModel.name.add(document["name"].toString())
+//                viewModel.userId.add(document.id)
+//            }
+//        }
         Column(Modifier.fillMaxSize()) {
-            viewModel.userName =
-                if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName.toString()
-                else Firebase.auth.currentUser?.email?.dropLast(10).toString()
+//            viewModel.userName =
+//                if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName.toString()
+//                else Firebase.auth.currentUser?.email?.dropLast(10).toString()
+//            for (i in viewModel.email) {
+//                viewModel.isNewUser.value = Firebase.auth.currentUser?.email != i
+//                for (j in 0..viewModel.email.size) {
+//                    if (i == viewModel.email[j]) {
+//                        viewModel.userName = viewModel.name[j]
+//                    }
+//                }
+//            }
+//            viewModel.userName = ,
+
 
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
                 Column(Modifier.fillMaxWidth()) {
@@ -238,6 +259,7 @@ fun SettingsBackIcon(navControllerMain: NavController) {
 
 @Composable
 fun Avatar(viewModel: AppViewModel) {
+
     Box(modifier = Modifier.padding(24.dp)) {
         Row {
             Image(
@@ -255,7 +277,7 @@ fun Avatar(viewModel: AppViewModel) {
             )
             Column {
                 Text(
-                    text = viewModel.userName,
+                    text = viewModel.usersName.value,
                     fontSize = MyTypography.h4.fontSize,
                     modifier = Modifier.padding(start = 16.dp, end = 16.dp)
                 )
@@ -264,7 +286,7 @@ fun Avatar(viewModel: AppViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "age: ${viewModel.usersAge.value}",
+                        text = "age: $",
                         fontSize = MyTypography.h5.fontSize,
                         modifier = Modifier.padding(16.dp)
                     )

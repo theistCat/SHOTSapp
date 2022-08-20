@@ -68,6 +68,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:30.3.0"))
     implementation("com.google.firebase:firebase-firestore-ktx:24.2.2")
     implementation("com.google.android.material:material:1.6.1")
+    implementation("com.google.android.gms:play-services-location:20.0.0")
 
 
     debugImplementation("androidx.compose.ui:ui-tooling:${rootProject.extra["compose_version"]}")
@@ -80,7 +81,7 @@ dependencies {
 
     implementation("com.google.maps.android:maps-compose:2.5.2")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
-    implementation("androidx.compose.foundation:foundation:1.3.0-alpha02")
+    implementation("androidx.compose.foundation:foundation:1.3.0-alpha03")
 
     implementation("com.google.accompanist:accompanist-permissions:0.24.13-rc")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.17.0")

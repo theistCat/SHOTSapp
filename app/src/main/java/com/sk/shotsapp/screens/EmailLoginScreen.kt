@@ -24,6 +24,7 @@ import com.sk.shotsapp.ui.theme.SecondColor
 fun EmailLoginScreen(
     viewModel: AppViewModel, navController: NavController
 ) {
+
     Column(
         modifier = Modifier
 //            .verticalScroll(rememberScrollState())
@@ -40,7 +41,7 @@ fun EmailLoginScreen(
         PasswordField(viewModel)
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             ButtonEmailPasswordLogin(viewModel, navController)
-            ButtonEmailPasswordCreate(viewModel,  navController)
+            ButtonEmailPasswordCreate(viewModel, navController)
         }
     }
 }
@@ -97,9 +98,9 @@ fun ButtonEmailPasswordLogin(viewModel: AppViewModel, navController: NavControll
         enabled = viewModel.isValidEmailAndPassword(),
         content = { Text(text = stringResource(R.string.login), color = Color.White) },
         onClick = {
-            viewModel.fromScreen = "login"
-            navController.navigate("createAccount")
-//            viewModel.signInWithEmailAndPassword()
+//            viewModel.fromScreen = "login"
+            viewModel.signInWithEmailAndPassword()
+//            navController.navigate("changeAccount")
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = BarColor
@@ -113,9 +114,10 @@ fun ButtonEmailPasswordCreate(viewModel: AppViewModel, navController: NavControl
         enabled = viewModel.isValidEmailAndPassword(),
         content = { Text(text = stringResource(R.string.create), color = Color.White) },
         onClick = {
-            viewModel.fromScreen = "create"
-            navController.navigate("createAccount")
-//            viewModel.createUserWithEmailAndPassword()
+//            viewModel.fromScreen = "create"
+//            navController.navigate("createAccount")
+            viewModel.createUserWithEmailAndPassword()
+//            navController.navigate("changeAccount")
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = SecondColor
