@@ -36,7 +36,6 @@ private const val TAG = "LoginScreen"
 
 @Composable
 fun LoginScreen(
-//    emailLoginClick: () -> Unit,
     viewModel: AppViewModel, navController: NavController
 ) {
     Column(
@@ -59,7 +58,6 @@ fun LoginScreen(
             ErrorField(viewModel)
         }
         EmailLoginScreen(viewModel = viewModel, navController = navController)
-//        SignInWithEmailButton(buttonWidth, emailLoginClick)
         SignInWithGoogleButton(viewModel)
     }
 

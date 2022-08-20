@@ -27,58 +27,6 @@ import com.sk.shotsapp.R
 import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.MyTypography
 
-//@Composable
-//fun EventScreen(
-//    viewModel: AppViewModel
-//) {
-//    Scaffold(topBar = { Title(whichScreen = Screen.Events.label) }) {
-//        val db = Firebase.firestore
-//
-//        if (viewModel.doc.isEmpty()) {
-//            EmptyMessage()
-//        }
-//
-//        var refreshing by remember { mutableStateOf(false) }
-//        LaunchedEffect(refreshing) {
-//            if (refreshing) {
-//                delay(2000)
-//                refreshing = false
-//            }
-//        }
-//
-//        SwipeRefresh(state = rememberSwipeRefreshState(isRefreshing = refreshing), onRefresh = {
-//            refreshing = true
-//
-//            viewModel.doc.clear()
-//
-//            db.collection("events").get().addOnSuccessListener { result ->
-//                for (document in result) {
-//                    viewModel.doc.add("${document["author"]} => ${document["title"]} : ${document["description"]}")
-//                    viewModel.eventId.add(document.id)
-//                }
-//            }.addOnFailureListener { exception ->
-//                Log.w(TAG, "Error getting documents.", exception)
-//            }
-//        }) {
-//            LazyColumn(
-//                modifier = Modifier.fillMaxSize()
-//            ) {
-//                items(viewModel.doc.size) { it ->
-////                    EventCard(
-////                        text = viewModel.doc[it],
-////                        eventId = viewModel.eventId[it],
-////                        R.drawable.ic_event.toString()
-////                    )
-//                }
-//            }
-//        }
-//
-//        print(it)
-//
-//    }
-//}
-
-
 @Composable
 fun Title(whichScreen: String) {
     Box(
@@ -108,7 +56,7 @@ fun EventCard(
     navController: NavController
 ) {
     val context = LocalContext.current
-    Card{
+    Card {
         Row(
             Modifier
                 .padding(16.dp)
@@ -158,27 +106,3 @@ fun EventCard(
     Divider(color = BarColor, modifier = Modifier.fillMaxWidth())
 
 }
-
-//@Composable
-//fun EmptyMessage() {
-//    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//        Column() {
-//            Text(
-//                text = "Empty",
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(24.dp),
-//                fontSize = 50.sp,
-//                textAlign = TextAlign.Center
-//            )
-//            Text(
-//                text = "pull to refresh",
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(24.dp),
-//                fontSize = 30.sp,
-//                textAlign = TextAlign.Center
-//            )
-//        }
-//    }
-//}

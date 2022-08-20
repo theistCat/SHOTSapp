@@ -84,47 +84,6 @@ fun DisplayName(viewModel: AppViewModel) {
     )
 }
 
-
-//@Composable
-//fun PasswordFieldChange(viewModel: AppViewModel) {
-//    val password = viewModel.password.value
-//
-//    TextField(
-//        modifier = Modifier.fillMaxWidth(),
-//        visualTransformation = PasswordVisualTransformation(),
-//        value = password,
-//        label = { Text(text = stringResource(R.string.password)) },
-//        onValueChange = { viewModel.setPassword(it) },
-//        singleLine = true,
-//        colors = TextFieldDefaults.textFieldColors(
-//            focusedLabelColor = BarColor,
-//            cursorColor = BarColor,
-//            focusedIndicatorColor = BarColor,
-//            backgroundColor = Color.White
-//        )
-//    )
-//}
-//
-//@Composable
-//fun PasswordFieldChangeRetype(viewModel: AppViewModel) {
-//    val passwordRetype = viewModel.passwordRetype.value
-//
-//    TextField(
-//        modifier = Modifier.fillMaxWidth(),
-//        visualTransformation = PasswordVisualTransformation(),
-//        value = passwordRetype,
-//        label = { Text(text = stringResource(R.string.password_retype)) },
-//        onValueChange = { viewModel.setPasswordRetype(it) },
-//        singleLine = true,
-//        colors = TextFieldDefaults.textFieldColors(
-//            focusedLabelColor = BarColor,
-//            cursorColor = BarColor,
-//            focusedIndicatorColor = BarColor,
-//            backgroundColor = Color.White
-//        )
-//    )
-//}
-
 @Composable
 fun DatePickerView(viewModel: AppViewModel) {
     // Declaring integer values

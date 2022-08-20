@@ -100,8 +100,6 @@ fun DeleteUserButton(viewModel: AppViewModel, navController: NavController) {
             Text(
                 text = "Delete account", fontStyle = MyTypography.h5.fontStyle
             )
-
-//            Icon(painter = painterResource(id = R.drawable.ic_exit), contentDescription = null)
         }
     }
 }

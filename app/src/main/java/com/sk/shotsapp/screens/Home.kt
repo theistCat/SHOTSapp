@@ -50,28 +50,6 @@ fun HomeScreen(
     val activity = (LocalContext.current as? Activity)
     viewModel.isBottomBarEnabled.value = true
 
-//    val mapProperties by remember {
-//        mutableStateOf(
-//            MapProperties(
-//                maxZoomPreference = 16f,
-//                minZoomPreference = 8f,
-//            )
-//        )
-//    }
-//    val mapUiSettings by remember {
-//        mutableStateOf(
-//            MapUiSettings(
-//                mapToolbarEnabled = false,
-//                zoomControlsEnabled = false,
-//                myLocationButtonEnabled = true
-//            )
-//        )
-//    }
-//    val tashkent = LatLng(41.2995, 69.2401)
-//    val cameraPositionState: CameraPositionState = rememberCameraPositionState {
-//        position = CameraPosition.fromLatLngZoom(tashkent, 13f)
-//    }
-
     Box(Modifier.fillMaxSize()) {
         val scope = rememberCoroutineScope()
         val scaffoldState = rememberBottomSheetScaffoldState()
@@ -79,7 +57,6 @@ fun HomeScreen(
         BottomSheetScaffold(
             topBar = { Title(whichScreen = Screen.Home.label) },
             sheetContent = {
-//                Card(shape = Shapes.small) {
                 Box(
                     Modifier
                         .fillMaxWidth()
@@ -157,8 +134,6 @@ fun HomeScreen(
                             Alignment.BottomEnd
                         )
                         .offset(y = (-50).dp),
-//                        .alpha(if (scaffoldState.bottomSheetState.isCollapsed) 1f else 0f),
-//                    backgroundColor = ifDarkTheme(true),
                     backgroundColor = Color.White,
                     elevation = FloatingActionButtonDefaults.elevation(2.dp, 4.dp),
                     icon = {
@@ -214,21 +189,6 @@ fun HomeScreen(
                     }
                 )
             }
-
-//            GoogleMap(contentPadding = innerPadding,
-////                googleMapOptionsFactory = {
-////                    GoogleMapOptions().mapId("map01").zoomControlsEnabled(false)
-////                        .mapToolbarEnabled(false).mapType(MapType.NORMAL.value)
-////                        .camera(cameraPositionState.position)
-////                },
-//                properties = mapProperties,
-//                uiSettings = mapUiSettings,
-//                cameraPositionState = cameraPositionState,
-//                onMapLoaded = {
-//
-//                }) {
-//
-//            }
         }
     }
 }
@@ -273,7 +233,13 @@ private fun GpsIconButton(onIconClick: () -> Unit) {
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End
         ) {
-            FloatingActionButton(onClick = onIconClick, modifier = Modifier.offset(x = (-10).dp, y = (-200).dp).size(40.dp), backgroundColor = Color.White) {
+            FloatingActionButton(
+                onClick = onIconClick,
+                modifier = Modifier
+                    .offset(x = (-10).dp, y = (-200).dp)
+                    .size(40.dp),
+                backgroundColor = Color.White
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_location),
                     contentDescription = ""
@@ -311,7 +277,6 @@ private fun GpsIconButton(onIconClick: () -> Unit) {
 @Composable
 fun DefaultBackHandler(backNavElement: BackNavElement) = BackHandler { backNavElement.tryGoBack() }
 
-//@OptIn(ExperimentalMaterialApi::class)
 fun modalBackNavElement(
     state: BottomSheetScaffoldState, coroutineScope: CoroutineScope
 ) = BackNavElement.needsProcessing {

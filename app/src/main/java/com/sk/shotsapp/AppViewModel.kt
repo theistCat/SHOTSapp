@@ -188,17 +188,4 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
     private val _name = mutableListOf<String>()
     var name: MutableList<String> = _name
 
-    private val _age = mutableListOf<String>()
-    var age: MutableList<String> = _age
-
-    private val _sex = mutableListOf<String>()
-    var sex: MutableList<String> = _sex
-
-    private val _email = mutableListOf<String>()
-    var email: MutableList<String> = _email
-
-    private val _userID = mutableListOf<String>()
-    val userId: MutableList<String> = _userID
-//    private val _fromScreen = String()
-//    var fromScreen: String = _fromScreen
 }

@@ -25,13 +25,11 @@ import com.sk.shotsapp.screens.*
 fun NaviG(viewModel: AppViewModel, fusedLocationProviderClient: FusedLocationProviderClient) {
     val navControllerMain = rememberNavController()
     val items = listOf(
-//        Screen.Events,
         Screen.Chat, Screen.Home, Screen.Profile
     )
     Scaffold(bottomBar = {
         if (viewModel.isBottomBarEnabled.value) {
             BottomNavigation(
-//                backgroundColor = ifDarkTheme(status = true)
                 backgroundColor = Color.White
             ) {
                 val navBackStackEntry by navControllerMain.currentBackStackEntryAsState()
@@ -40,12 +38,10 @@ fun NaviG(viewModel: AppViewModel, fusedLocationProviderClient: FusedLocationPro
                     BottomNavigationItem(icon = {
                         Icon(
                             painter = painterResource(id = screen.resourceId),
-//                                tint = BarColor,
                             contentDescription = screen.route,
                             modifier = Modifier.size(if (screen.route == "home") 45.dp else 30.dp)
                         )
                     },
-//                        label = { Text(screen.label) },
                         selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
                         onClick = {
                             navControllerMain.navigate(screen.route) {
@@ -61,18 +57,6 @@ fun NaviG(viewModel: AppViewModel, fusedLocationProviderClient: FusedLocationPro
             }
         }
     }) { innerPadding ->
-//        viewModel.db.collection("users").get().addOnSuccessListener { result ->
-//            viewModel.email.clear()
-//            viewModel.name.clear()
-//            viewModel.age.clear()
-//            viewModel.sex.clear()
-//            for (document in result) {
-//                viewModel.sex.add(document["sex"].toString())
-//                viewModel.age.add(document["age"].toString())
-//                viewModel.email.add(document["email"].toString())
-//                viewModel.name.add(document["name"].toString())
-//            }
-//        }
         NavHost(
             navController = navControllerMain,
             startDestination = if (viewModel.isLoggedIn.value) "profile" else "Login",
@@ -80,18 +64,10 @@ fun NaviG(viewModel: AppViewModel, fusedLocationProviderClient: FusedLocationPro
         ) {
             composable("profile") { Profile(viewModel, navControllerMain) }
             composable("home") {
-                if (viewModel.isNewUser.value) ChangeAccountInfo(
-                    viewModel = viewModel, navController = navControllerMain
-                ) else HomeScreen(navControllerMain, viewModel, fusedLocationProviderClient)
+                HomeScreen(navControllerMain, viewModel, fusedLocationProviderClient)
             }
-//            composable("events") { EventScreen(viewModel) }
             composable("chat") { ChatScreen() }
-            composable("create") {
-//                if (viewModel.isLoggedIn.value)
-                CreateNew(viewModel, navControllerMain)
-//                else
-//                    Profile(viewModel, navControllerMain)
-            }
+            composable("create") { CreateNew(viewModel, navControllerMain) }
             composable("settings") { SettingScreen(viewModel, navControllerMain) }
             composable("changeAccount") { ChangeAccountInfo(viewModel, navControllerMain) }
             composable("Login") {
@@ -104,7 +80,6 @@ fun NaviG(viewModel: AppViewModel, fusedLocationProviderClient: FusedLocationPro
                 viewModel.setError("")
                 EmailLoginScreen(viewModel, navControllerMain)
             }
-//            composable(route = "Welcome") { WelcomeScreen(viewModel, navControllerMain) }
 
             /*...*/
         }

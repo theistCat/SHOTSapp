@@ -41,34 +41,7 @@ fun Profile(viewModel: AppViewModel, navControllerMain: NavHostController) {
             navControllerMain = navControllerMain, loginViewModel = viewModel
         )
     }) {
-//        viewModel.db.collection("users").get().addOnSuccessListener { result ->
-//            viewModel.email.clear()
-//            viewModel.name.clear()
-//            viewModel.age.clear()
-//            viewModel.sex.clear()
-//            viewModel.userId.clear()
-//            for (document in result) {
-//                viewModel.sex.add(document["sex"].toString())
-//                viewModel.age.add(document["age"].toString())
-//                viewModel.email.add(document["email"].toString())
-//                viewModel.name.add(document["name"].toString())
-//                viewModel.userId.add(document.id)
-//            }
-//        }
         Column(Modifier.fillMaxSize()) {
-//            viewModel.userName =
-//                if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName.toString()
-//                else Firebase.auth.currentUser?.email?.dropLast(10).toString()
-//            for (i in viewModel.email) {
-//                viewModel.isNewUser.value = Firebase.auth.currentUser?.email != i
-//                for (j in 0..viewModel.email.size) {
-//                    if (i == viewModel.email[j]) {
-//                        viewModel.userName = viewModel.name[j]
-//                    }
-//                }
-//            }
-//            viewModel.userName = ,
-
 
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
                 Column(Modifier.fillMaxWidth()) {
@@ -101,66 +74,6 @@ fun Profile(viewModel: AppViewModel, navControllerMain: NavHostController) {
         print(it)
     }
 }
-
-//@Composable
-//fun NavigateBetweenScreen(
-//    loginViewModel: AppViewModel,
-//    navControllerMain: NavHostController
-
-//    ) {
-//    val startDestination = if (loginViewModel.isLoggedIn.value) "Welcome" else "Login"
-
-//    NavHost(navController = navControllerMain, startDestination = startDestination) {
-//        composable(route = "Login") {
-//            loginViewModel.setError("")
-//            LoginScreen(
-//                viewModel = loginViewModel, navControllerMain
-//            )
-//        }
-//        composable(route = "Sign in with Google") {
-//            loginViewModel.setError("")
-//            EmailLoginScreen(loginViewModel, navControllerMain)
-//        }
-//        composable(route = "Welcome") { WelcomeScreen(loginViewModel, navControllerMain) }
-//        composable("createAccount") { CreateAccount(loginViewModel, navController, navControllerMain) }
-
-//    }
-//}
-
-//@Composable
-//fun WelcomeScreen(viewModel: AppViewModel, navController: NavController) {
-//    viewModel.userName =
-//        if (FirebaseAuth.getInstance().currentUser?.displayName != null) Firebase.auth.currentUser?.displayName.toString()
-//        else Firebase.auth.currentUser?.email?.dropLast(10).toString()
-//
-//    Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
-//        Column(Modifier.fillMaxWidth()) {
-//            Avatar(viewModel = viewModel)
-//            Text(
-//                text = "Interests",
-//                fontSize = MyTypography.h4.fontSize,
-//                modifier = Modifier.padding(16.dp)
-//            )
-//            Interests(
-//                interests = mutableListOf(
-//                    "music",
-//                    "sex",
-//                    "cooking",
-//                    "dancing",
-//                    "fun",
-//                    "travelling",
-//                    "art",
-//                    "coffee",
-//                    "tea",
-//                    "sport",
-//                    "business",
-//                    "poems",
-//                    "games"
-//                )
-//            )
-//        }
-//    }
-//}
 
 @Composable
 fun Interests(interests: List<String>) {
