@@ -14,8 +14,8 @@ android {
         applicationId = "com.sk.shotsapp"
         minSdk = 28
         targetSdk = 33
-        versionCode = 3
-        versionName = "1.03"
+        versionCode = 4
+        versionName = "1.04"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
