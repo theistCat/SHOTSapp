@@ -99,7 +99,7 @@ fun DeleteUserButton(viewModel: AppViewModel, navController: NavController) {
         ) {
 
             Text(
-                text = "Delete account", fontStyle = MyTypography.h5.fontStyle
+                text = stringResource(R.string.deleteAccount), fontStyle = MyTypography.h5.fontStyle
             )
         }
     }
@@ -114,7 +114,7 @@ fun EditProfile(navController: NavController) {
         colors = ButtonDefaults.buttonColors(backgroundColor = SecondColor, contentColor = Color.White)
     ) {
         Text(
-            text = "Change account info",
+            text = stringResource(id = R.string.changeAccountInfo),
             modifier = Modifier.padding(end = 4.dp),
             fontStyle = MyTypography.h5.fontStyle
         )

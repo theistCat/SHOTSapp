@@ -30,7 +30,7 @@ import java.util.*
 fun ChangeAccountInfo(viewModel: AppViewModel = hiltViewModel(), navController: NavController) {
     viewModel.isBottomBarEnabled.value = false
 
-    Scaffold(topBar = { Title(whichScreen = "Change Account Info") }) {
+    Scaffold(topBar = { Title(whichScreen = stringResource(R.string.changeInfo)) }) {
         Column {
             DisplayName(viewModel = viewModel)
             Email(viewModel = viewModel)
@@ -71,7 +71,7 @@ fun DisplayName(viewModel: AppViewModel) {
     TextField(
         modifier = Modifier.fillMaxWidth(),
         value = usersName,
-        label = { Text(text = "Name") },
+        label = { Text(text = stringResource(R.string.name)) },
         onValueChange = { viewModel.setUsersName(it) },
         singleLine = true,
         isError = viewModel.usersName.value.isEmpty() && viewModel.usersName.value == "",
@@ -127,7 +127,7 @@ fun DatePickerView(viewModel: AppViewModel) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             viewModel.setUsersAge(mDate.value)
             Text(
-                text = "Date Picker: ${mDate.value}",
+                text = stringResource(R.string.datePicker) + mDate.value,
                 color = BarColor,
             )
 
@@ -187,7 +187,7 @@ fun SaveProfile(viewModel: AppViewModel, navController: NavController) {
         )
     ) {
         Text(
-            text = "Change account info",
+            text = stringResource(R.string.changeAccountInfo),
             modifier = Modifier.padding(end = 4.dp),
             fontStyle = MyTypography.h5.fontStyle
         )

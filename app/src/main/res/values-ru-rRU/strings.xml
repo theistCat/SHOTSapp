@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SHOTS</string>
+    <string name="back_icon">назад</string>
+    <string name="login">Вход</string>
+    <string name="sign_in_with_email">Вход через почту</string>
+    <string name="sign_in_with_google">Вход через Google</string>
+    <string name="email">Почта</string>
+    <string name="password">Пароль</string>
+    <string name="password_retype">Повтирите пароль</string>
+    <string name="create">Создать аккаунт</string>
+    <string name="welcome">Добро пожаловать</string>
+    <string name="log_out">Выход</string>
+    <string name="welcome_logged_in">Добро пожаловать!</string>
+    <string name="applicationId">com.sk.shotsapp</string>
+    <string name="changeInfo">Изменить данные аккаунта</string>
+    <string name="name">Имя</string>
+    <string name="datePicker">Выбрать дату рождения</string>
+    <string name="changeAccountInfo">Изменить данные аккаунта</string>
+    <string name="construction">разрабатывается</string>
+    <string name="getPosition">указать это место</string>
+    <string name="titleOfEvent">Название мероприятия</string>
+    <string name="errorEmpty">поле не может быть пустым</string>
+    <string name="descrOfEvent">описание к нему</string>
+    <string name="addEvent">Добавить мероприятие</string>
+    <string name="currnetPosition">Текущее местоположение</string>
+    <string name="deleteAccount">Удалить аккаунт</string>
+    <string name="addBtn">Добавить</string>
+    <string name="age">"возраст "</string>
+    <string name="sex">"пол "</string>
+    <string name="home">Главная</string>
+    <string name="chats">Чаты</string>
+    <string name="createLabel">Создать</string>
+    <string name="profile">Профиль</string>
+</resources>

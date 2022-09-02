@@ -2,25 +2,23 @@
 
 package com.sk.shotsapp.screens
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Icon
+import androidx.compose.material.Scaffold
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,7 +43,7 @@ fun Profile(viewModel: AppViewModel = hiltViewModel(), navControllerMain: NavHos
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
                 Column(Modifier.fillMaxWidth()) {
                     Avatar(viewModel = viewModel)
-                    Text(text = "under construction!", fontSize = 30.sp, modifier = Modifier.padding(16.dp))
+                    Text(text = stringResource(id = R.string.construction), fontSize = 30.sp, modifier = Modifier.padding(16.dp))
 //                    Text(
 //                        text = "Interests",
 //                        fontSize = MyTypography.h4.fontSize,
@@ -200,12 +198,12 @@ fun Avatar(viewModel: AppViewModel) {
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = "age: $",
+                        text = stringResource(R.string.age) +"$",
                         fontSize = MyTypography.h5.fontSize,
                         modifier = Modifier.padding(16.dp)
                     )
                     Text(
-                        text = "sex: $",
+                        text = stringResource(R.string.sex) +"$",
                         fontSize = MyTypography.h5.fontSize,
                         modifier = Modifier.padding(16.dp)
                     )

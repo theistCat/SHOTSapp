@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,7 +29,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.maps.android.compose.*
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.LocationUtils
-import com.sk.shotsapp.Screen
+import com.sk.shotsapp.R
 import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.MyTypography
 
@@ -42,7 +43,7 @@ fun CreateNew(
 
     var currentLocation by remember { mutableStateOf(LocationUtils.getDefaultLocation()) }
 
-    Scaffold(topBar = { Title(whichScreen = Screen.Create.label) }) {
+    Scaffold(topBar = { Title(whichScreen = stringResource(id = R.string.create)) }) {
         val db = Firebase.firestore
         var isExpanded by remember { mutableStateOf(false) }
         Column(
@@ -88,7 +89,7 @@ fun CreateNew(
                     Marker(
                         state = MarkerState(position = LocationUtils.getPosition(currentLocation)),
                         draggable = true,
-                        title = "get this Position",
+                        title = stringResource(R.string.getPosition),
                         onInfoWindowClick = {
                             viewModel.setLoc(it.position)
                             it.title = it.position.toString()
@@ -164,7 +165,7 @@ fun CreateNew(
                 ) {
 
                     Text(
-                        text = "Add",
+                        text = stringResource(R.string.addBtn),
                         modifier = Modifier.padding(end = 4.dp),
                         fontStyle = MyTypography.h5.fontStyle
                     )
@@ -185,7 +186,9 @@ fun NameOfEvent(viewModel: AppViewModel) {
     TextField(
         value = text,
         onValueChange = { text = it },
-        label = { Text(if (!viewModel.isError.value) "title of Event" else "field can't be empty") },
+        label = { Text(if (!viewModel.isError.value) stringResource(R.string.titleOfEvent) else stringResource(
+                    R.string.errorEmpty)
+                ) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
@@ -212,7 +215,7 @@ fun DescriptionOfEvent(viewModel: AppViewModel) {
     TextField(
         value = text,
         onValueChange = { text = it },
-        label = { Text(if (!viewModel.isError.value) "description for it" else "field can't be empty") },
+        label = { Text(if (!viewModel.isError.value) stringResource(R.string.descrOfEvent) else stringResource(id = R.string.errorEmpty)) },
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
