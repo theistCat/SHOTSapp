@@ -1,12 +1,12 @@
 package com.sk.shotsapp
 
-import android.app.Application
 import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
@@ -23,10 +23,13 @@ import javax.inject.Inject
 private const val TAG = "LoginViewModel"
 
 @HiltViewModel
-class AppViewModel @Inject constructor(application: Application) : AndroidViewModel(application) {
+class AppViewModel @Inject constructor() : ViewModel() {
 
     private val _isLoggedIn = mutableStateOf(false)
     val isLoggedIn: State<Boolean> = _isLoggedIn
+
+    private val _isCheck = mutableStateOf(false)
+    val isCheck: State<Boolean> = _isCheck
 
     private val _error = mutableStateOf("")
     val error: State<String> = _error
@@ -37,30 +40,32 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
     private val _password = mutableStateOf("")
     val password: State<String> = _password
 
-    private val _passwordRetype = mutableStateOf("")
-    val passwordRetype: State<String> = _passwordRetype
-
     private val _usersName = mutableStateOf("")
     val usersName: State<String> = _usersName
 
     private val _usersAge = mutableStateOf("")
     val usersAge: State<String> = _usersAge
 
-    private val _userSex = mutableStateOf("")
-    val userSex: State<String> = _userSex
+    private val _gotLoc = mutableStateOf(LatLng(0.0, 0.0))
+    val gotLoc: State<LatLng> = _gotLoc
 
     // Setters
+
+    fun setLoc(gotLoc: LatLng) {
+        _gotLoc.value = gotLoc
+    }
+
     fun setUserEmail(email: String) {
         _userEmail.value = email
+    }
+
+    fun setIsCheck(isCheck: Boolean) {
+        _isCheck.value = isCheck
     }
 
     fun setPassword(password: String) {
         _password.value = password
     }
-
-//    fun setPasswordRetype(passwordRetype: String) {
-//        _passwordRetype.value = passwordRetype
-//    }
 
     fun setUsersName(usersName: String) {
         _usersName.value = usersName
@@ -68,10 +73,6 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
 
     fun setUsersAge(usersAge: String) {
         _usersAge.value = usersAge
-    }
-
-    fun setUserSex(userSex: String) {
-        _userSex.value = userSex
     }
 
     fun setError(error: String) {
@@ -170,8 +171,11 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
     private val _dd = String()
     var dd: String = _dd
 
-    private val _userName = String()
-    var userName: String = _userName
+    private val _lat = mutableListOf(0.0)
+    var lat: MutableList<kotlin.Double> = _lat
+
+    private val _lon = mutableListOf(0.0)
+    var lon: MutableList<kotlin.Double> = _lon
 
     private val _isError = mutableStateOf(false)
     var isError: MutableState<Boolean> = _isError
@@ -181,11 +185,5 @@ class AppViewModel @Inject constructor(application: Application) : AndroidViewMo
 
     private val _isBottomBarEnabled = mutableStateOf(false)
     var isBottomBarEnabled: MutableState<Boolean> = _isBottomBarEnabled
-
-    private val _isNewUser = mutableStateOf(false)
-    val isNewUser: MutableState<Boolean> = _isNewUser
-
-    private val _name = mutableListOf<String>()
-    var name: MutableList<String> = _name
 
 }

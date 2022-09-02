@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.ui.theme.BarColor
@@ -22,7 +22,7 @@ import com.sk.shotsapp.ui.theme.SecondColor
 
 @Composable
 fun EmailLoginScreen(
-    viewModel: AppViewModel, navController: NavController
+    viewModel: AppViewModel = hiltViewModel()
 ) {
 
     Column(
@@ -40,8 +40,8 @@ fun EmailLoginScreen(
         EmailField(viewModel)
         PasswordField(viewModel)
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-            ButtonEmailPasswordLogin(viewModel, navController)
-            ButtonEmailPasswordCreate(viewModel, navController)
+            ButtonEmailPasswordLogin(viewModel)
+            ButtonEmailPasswordCreate(viewModel)
         }
     }
 }
@@ -93,7 +93,7 @@ fun PasswordField(viewModel: AppViewModel) {
 }
 
 @Composable
-fun ButtonEmailPasswordLogin(viewModel: AppViewModel, navController: NavController) {
+fun ButtonEmailPasswordLogin(viewModel: AppViewModel) {
     Button(
         enabled = viewModel.isValidEmailAndPassword(),
         content = { Text(text = stringResource(R.string.login), color = Color.White) },
@@ -109,7 +109,7 @@ fun ButtonEmailPasswordLogin(viewModel: AppViewModel, navController: NavControll
 }
 
 @Composable
-fun ButtonEmailPasswordCreate(viewModel: AppViewModel, navController: NavController) {
+fun ButtonEmailPasswordCreate(viewModel: AppViewModel) {
     Button(
         enabled = viewModel.isValidEmailAndPassword(),
         content = { Text(text = stringResource(R.string.create), color = Color.White) },

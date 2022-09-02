@@ -22,10 +22,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.sk.shotsapp.AppViewModel
@@ -34,40 +35,39 @@ import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.MyTypography
 
 @Composable
-fun Profile(viewModel: AppViewModel, navControllerMain: NavHostController) {
+fun Profile(viewModel: AppViewModel = hiltViewModel(), navControllerMain: NavHostController) {
     viewModel.isBottomBarEnabled.value = true
     Scaffold(topBar = {
-        ProfileTopBar(
-            navControllerMain = navControllerMain, loginViewModel = viewModel
-        )
+        ProfileTopBar(navControllerMain = navControllerMain)
     }) {
         Column(Modifier.fillMaxSize()) {
 
             Box(Modifier.fillMaxWidth(), contentAlignment = Alignment.TopCenter) {
                 Column(Modifier.fillMaxWidth()) {
                     Avatar(viewModel = viewModel)
-                    Text(
-                        text = "Interests",
-                        fontSize = MyTypography.h4.fontSize,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                    Interests(
-                        interests = mutableListOf(
-                            "music",
-                            "sex",
-                            "cooking",
-                            "dancing",
-                            "fun",
-                            "travelling",
-                            "art",
-                            "coffee",
-                            "tea",
-                            "sport",
-                            "business",
-                            "poems",
-                            "games"
-                        )
-                    )
+                    Text(text = "under construction!", fontSize = 30.sp, modifier = Modifier.padding(16.dp))
+//                    Text(
+//                        text = "Interests",
+//                        fontSize = MyTypography.h4.fontSize,
+//                        modifier = Modifier.padding(16.dp)
+//                    )
+//                    Interests(
+//                        interests = mutableListOf(
+//                            "music",
+//                            "sex",
+//                            "cooking",
+//                            "dancing",
+//                            "fun",
+//                            "travelling",
+//                            "art",
+//                            "coffee",
+//                            "tea",
+//                            "sport",
+//                            "business",
+//                            "poems",
+//                            "games"
+//                        )
+//                    )
                 }
             }
         }
@@ -75,59 +75,59 @@ fun Profile(viewModel: AppViewModel, navControllerMain: NavHostController) {
     }
 }
 
+//@Composable
+//fun Interests(interests: List<String>) {
+//    var isExpanded by remember { mutableStateOf(false) }
+//    val interactionSource = remember { MutableInteractionSource() }
+//    Card(shape = RoundedCornerShape(25.dp), modifier = Modifier.padding(16.dp)) {
+//        Surface(
+//            shape = MaterialTheme.shapes.medium,
+//            modifier = Modifier
+//                .animateContentSize()
+//                .padding(1.dp)
+//                .clickable { isExpanded = !isExpanded },
+//            elevation = 1.dp
+//        ) {
+//            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+//                LazyVerticalGrid(
+//                    columns = GridCells.Adaptive(150.dp), modifier = Modifier
+//                        .height(if (isExpanded) 400.dp else 150.dp), userScrollEnabled = isExpanded
+//                ) {
+//                    items(interests) { interest ->
+//                        Button(
+//                            {},
+//                            shape = RoundedCornerShape(50.dp),
+//                            modifier = Modifier
+//                                .padding(8.dp)
+//                                .widthIn(75.dp),
+////                            enabled = false
+//                        ) {
+//                            Text(text = interest, maxLines = 1)
+//                        }
+//                    }
+//                }
+//
+//                Icon(
+//                    painter = painterResource(id = if (isExpanded) R.drawable.ic_up_arrow else R.drawable.ic_down_arrow),
+//                    contentDescription = "",
+//                    modifier = Modifier
+//                        .clickable(
+//                            interactionSource = interactionSource, indication = null
+//                        ) {
+//                            isExpanded = !isExpanded
+//                        }
+////                        .padding(8.dp),
+//                        .size(30.dp),
+//                    tint = Color.Gray
+//                )
+//            }
+//        }
+//    }
+//
+//}
+
 @Composable
-fun Interests(interests: List<String>) {
-    var isExpanded by remember { mutableStateOf(false) }
-    val interactionSource = remember { MutableInteractionSource() }
-    Card(shape = RoundedCornerShape(25.dp), modifier = Modifier.padding(16.dp)) {
-        Surface(
-            shape = MaterialTheme.shapes.medium,
-            modifier = Modifier
-                .animateContentSize()
-                .padding(1.dp)
-                .clickable { isExpanded = !isExpanded },
-            elevation = 1.dp
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(150.dp), modifier = Modifier
-                        .height(if (isExpanded) 400.dp else 150.dp), userScrollEnabled = isExpanded
-                ) {
-                    items(interests) { interest ->
-                        Button(
-                            {},
-                            shape = RoundedCornerShape(50.dp),
-                            modifier = Modifier
-                                .padding(8.dp)
-                                .widthIn(75.dp),
-//                            enabled = false
-                        ) {
-                            Text(text = interest, maxLines = 1)
-                        }
-                    }
-                }
-
-                Icon(
-                    painter = painterResource(id = if (isExpanded) R.drawable.ic_up_arrow else R.drawable.ic_down_arrow),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .clickable(
-                            interactionSource = interactionSource, indication = null
-                        ) {
-                            isExpanded = !isExpanded
-                        }
-//                        .padding(8.dp),
-                        .size(30.dp),
-                    tint = Color.Gray
-                )
-            }
-        }
-    }
-
-}
-
-@Composable
-fun ProfileTopBar(navControllerMain: NavController, loginViewModel: AppViewModel) {
+fun ProfileTopBar(navControllerMain: NavController) {
     Box(modifier = Modifier.fillMaxWidth()) {
         SettingsIcon(navControllerMain = navControllerMain)
     }
@@ -189,6 +189,7 @@ fun Avatar(viewModel: AppViewModel) {
                 alignment = Alignment.Center
             )
             Column {
+                viewModel.setUsersName(Firebase.auth.currentUser?.displayName.toString())
                 Text(
                     text = viewModel.usersName.value,
                     fontSize = MyTypography.h4.fontSize,

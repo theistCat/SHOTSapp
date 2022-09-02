@@ -14,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.auth.ktx.userProfileChangeRequest
@@ -27,7 +27,7 @@ import com.sk.shotsapp.ui.theme.MyTypography
 import java.util.*
 
 @Composable
-fun ChangeAccountInfo(viewModel: AppViewModel, navController: NavController) {
+fun ChangeAccountInfo(viewModel: AppViewModel = hiltViewModel(), navController: NavController) {
     viewModel.isBottomBarEnabled.value = false
 
     Scaffold(topBar = { Title(whichScreen = "Change Account Info") }) {
@@ -139,6 +139,18 @@ fun DatePickerView(viewModel: AppViewModel) {
             )
         }
     }
+
+    IconToggleButton(checked = viewModel.isCheck.value,
+        onCheckedChange = { viewModel.setIsCheck(!viewModel.isCheck.value) })
+    {
+        Icon(
+            painter = painterResource(if (viewModel.isCheck.value) R.drawable.man else R.drawable.woman),
+            modifier = Modifier.size(150.dp),
+            contentDescription = "Radio button icon",
+            tint = BarColor
+        )
+    }
+
 }
 
 @Composable
@@ -168,7 +180,11 @@ fun SaveProfile(viewModel: AppViewModel, navController: NavController) {
                 navController.navigate("profile")
             }
         },
-        colors = ButtonDefaults.buttonColors(backgroundColor = BarColor, contentColor = Color.White)
+        enabled = false,
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = BarColor,
+            contentColor = Color.White
+        )
     ) {
         Text(
             text = "Change account info",

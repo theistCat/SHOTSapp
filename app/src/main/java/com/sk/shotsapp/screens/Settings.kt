@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -22,7 +23,7 @@ import com.sk.shotsapp.ui.theme.MyTypography
 import com.sk.shotsapp.ui.theme.SecondColor
 
 @Composable
-fun SettingScreen(viewModel: AppViewModel, navController: NavController) {
+fun SettingScreen(viewModel: AppViewModel= hiltViewModel(), navController: NavController) {
     viewModel.isBottomBarEnabled.value = true
     Scaffold(topBar = {
         SettingsBackIcon(navControllerMain = navController)
@@ -37,7 +38,7 @@ fun SettingScreen(viewModel: AppViewModel, navController: NavController) {
                 contentDescription = "",
             )
             if (viewModel.isLoggedIn.value) {
-                EditProfile(viewModel = viewModel, navController = navController)
+                EditProfile(navController = navController)
                 LogoutButton(viewModel, navController)
                 DeleteUserButton(viewModel, navController)
             }
@@ -105,7 +106,7 @@ fun DeleteUserButton(viewModel: AppViewModel, navController: NavController) {
 }
 
 @Composable
-fun EditProfile(viewModel: AppViewModel, navController: NavController) {
+fun EditProfile(navController: NavController) {
     Button(
         onClick = {
             navController.navigate("changeAccount")

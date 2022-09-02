@@ -1,7 +1,7 @@
 @file:OptIn(
     ExperimentalMaterialApi::class, ExperimentalMaterialApi::class
 )
-@file:Suppress("NAME_SHADOWING")
+@file:Suppress("NAME_SHADOWING", "CAST_NEVER_SUCCEEDS")
 
 package com.sk.shotsapp.screens
 
@@ -23,9 +23,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -41,7 +43,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     navControllerMain: NavController,
-    viewModel: AppViewModel,
+    viewModel: AppViewModel= hiltViewModel(),
     fusedLocationProviderClient: FusedLocationProviderClient
 ) {
     var currentLocation by remember { mutableStateOf(LocationUtils.getDefaultLocation()) }
@@ -86,11 +88,15 @@ fun HomeScreen(
                     viewModel.uids.clear()
                     viewModel.photoUrl.clear()
                     viewModel.eventId.clear()
+                    viewModel.lat.clear()
+                    viewModel.lon.clear()
                     for (document in result) {
                         viewModel.doc.add("${document["author"]} => ${document["title"]} : ${document["description"]}")
                         viewModel.photoUrl.add(document["photoUrl"].toString())
                         viewModel.eventId.add(document.id)
                         viewModel.uids.add(document["uid"].toString())
+                        viewModel.lat.add(document["lat"] as Double)
+                        viewModel.lon.add(document["lon"] as Double)
                     }
                     viewModel.isReady.value = true
                 }.addOnFailureListener { exception ->
@@ -99,7 +105,7 @@ fun HomeScreen(
                 if (viewModel.doc.size == 0) {
                     scope.launch { scaffoldState.bottomSheetState.collapse() }
                 }
-                if (viewModel.isReady.value) {
+                if (viewModel.isReady.value && viewModel.doc.isNotEmpty()) {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize()
                     ) {
@@ -108,7 +114,8 @@ fun HomeScreen(
                                 text = viewModel.doc[it],
                                 eventId = viewModel.eventId[it],
                                 painter = viewModel.photoUrl[it],
-                                viewModel,
+                                viewModel = viewModel,
+                                location = LatLng(viewModel.lat[it], viewModel.lon[it]),
                                 deleteBtn = viewModel.uids[it] == Firebase.auth.currentUser?.uid,
                                 navController = navControllerMain
                             )
@@ -194,7 +201,7 @@ fun HomeScreen(
 }
 
 @Composable
-private fun MyGoogleMap(
+fun MyGoogleMap(
     currentLocation: Location,
     cameraPositionState: CameraPositionState,
     onGpsIconClick: () -> Unit

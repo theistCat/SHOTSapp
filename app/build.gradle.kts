@@ -1,3 +1,4 @@
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -62,11 +63,11 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.5.1")
 
     //firebase-auth
-    implementation("com.google.firebase:firebase-auth:21.0.7")
+    implementation("com.google.firebase:firebase-auth:21.0.8")
     implementation("com.google.android.gms:play-services-auth:20.2.0")
-    implementation("com.google.firebase:firebase-auth-ktx:21.0.7")
+    implementation("com.google.firebase:firebase-auth-ktx:21.0.8")
     implementation(platform("com.google.firebase:firebase-bom:30.3.0"))
-    implementation("com.google.firebase:firebase-firestore-ktx:24.2.2")
+    implementation("com.google.firebase:firebase-firestore-ktx:24.3.0")
     implementation("com.google.android.material:material:1.6.1")
     implementation("com.google.android.gms:play-services-location:20.0.0")
 
@@ -77,11 +78,12 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.1")
 
     implementation("com.google.dagger:hilt-android:2.43")
-    implementation("androidx.hilt:hilt-navigation-compose:1.0.0") // Inside Nav graph DI to work
+    implementation("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     implementation("com.google.maps.android:maps-compose:2.5.2")
     implementation("com.google.android.gms:play-services-maps:18.1.0")
-    implementation("androidx.compose.foundation:foundation:1.3.0-alpha03")
+    implementation("androidx.compose.foundation:foundation:1.3.0-beta01")
 
     implementation("com.google.accompanist:accompanist-permissions:0.24.13-rc")
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.17.0")

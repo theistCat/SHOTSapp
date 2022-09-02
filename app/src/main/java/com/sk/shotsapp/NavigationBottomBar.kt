@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -22,7 +23,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.sk.shotsapp.screens.*
 
 @Composable
-fun NaviG(viewModel: AppViewModel, fusedLocationProviderClient: FusedLocationProviderClient) {
+fun NaviG(viewModel: AppViewModel = hiltViewModel(), fusedLocationProviderClient: FusedLocationProviderClient) {
     val navControllerMain = rememberNavController()
     val items = listOf(
         Screen.Chat, Screen.Home, Screen.Profile
@@ -67,7 +68,7 @@ fun NaviG(viewModel: AppViewModel, fusedLocationProviderClient: FusedLocationPro
                 HomeScreen(navControllerMain, viewModel, fusedLocationProviderClient)
             }
             composable("chat") { ChatScreen() }
-            composable("create") { CreateNew(viewModel, navControllerMain) }
+            composable("create") { CreateNew(viewModel, navControllerMain, fusedLocationProviderClient) }
             composable("settings") { SettingScreen(viewModel, navControllerMain) }
             composable("changeAccount") { ChangeAccountInfo(viewModel, navControllerMain) }
             composable("Login") {
@@ -78,7 +79,7 @@ fun NaviG(viewModel: AppViewModel, fusedLocationProviderClient: FusedLocationPro
             }
             composable(route = "Sign in with Google") {
                 viewModel.setError("")
-                EmailLoginScreen(viewModel, navControllerMain)
+                EmailLoginScreen(viewModel)
             }
 
             /*...*/

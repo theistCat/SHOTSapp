@@ -24,6 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -36,7 +37,7 @@ private const val TAG = "LoginScreen"
 
 @Composable
 fun LoginScreen(
-    viewModel: AppViewModel, navController: NavController
+    viewModel: AppViewModel= hiltViewModel(), navController: NavController
 ) {
     Column(
         modifier = Modifier
@@ -57,7 +58,7 @@ fun LoginScreen(
         if (viewModel.error.value.isNotBlank()) {
             ErrorField(viewModel)
         }
-        EmailLoginScreen(viewModel = viewModel, navController = navController)
+        EmailLoginScreen(viewModel = viewModel)
         SignInWithGoogleButton(viewModel)
     }
 

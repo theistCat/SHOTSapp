@@ -1,8 +1,11 @@
+@file:OptIn(ExperimentalMaterialApi::class)
+
 package com.sk.shotsapp.screens
 
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -14,23 +17,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.model.CameraPosition
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.maps.android.compose.*
 import com.sk.shotsapp.AppViewModel
+import com.sk.shotsapp.LocationUtils
 import com.sk.shotsapp.Screen
 import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.MyTypography
 
 
 @Composable
-fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
+fun CreateNew(
+    viewModel: AppViewModel = hiltViewModel(),
+    navControllerMain: NavController,
+    fusedLocationProviderClient: FusedLocationProviderClient
+) {
+
+    var currentLocation by remember { mutableStateOf(LocationUtils.getDefaultLocation()) }
 
     Scaffold(topBar = { Title(whichScreen = Screen.Create.label) }) {
         val db = Firebase.firestore
-
+        var isExpanded by remember { mutableStateOf(false) }
         Column(
             Modifier
                 .fillMaxSize()
@@ -39,6 +53,70 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
 
             NameOfEvent(viewModel = viewModel)
             DescriptionOfEvent(viewModel = viewModel)
+
+            val cameraPositionState = rememberCameraPositionState()
+            cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                LocationUtils.getPosition(currentLocation), 12f
+            )
+
+            Card(
+                onClick = { isExpanded = !isExpanded }, modifier = Modifier
+                    .height(300.dp)
+                    .fillMaxWidth()
+                    .padding(top = 16.dp), shape = RoundedCornerShape(10.dp)
+            ) {
+                val cameraPositionState = rememberCameraPositionState()
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                    LocationUtils.getPosition(currentLocation), 12f
+                )
+                var requestLocationUpdate by remember { mutableStateOf(true) }
+
+                val mapUiSettings by remember {
+                    mutableStateOf(
+                        MapUiSettings(zoomControlsEnabled = false)
+                    )
+                }
+
+                GoogleMap(
+                    modifier = Modifier.fillMaxSize(),
+                    cameraPositionState = cameraPositionState,
+                    uiSettings = mapUiSettings,
+                    onMapLongClick = {
+                        requestLocationUpdate = true
+                    }
+                ) {
+                    Marker(
+                        state = MarkerState(position = LocationUtils.getPosition(currentLocation)),
+                        draggable = true,
+                        title = "get this Position",
+                        onInfoWindowClick = {
+                            viewModel.setLoc(it.position)
+                            it.title = it.position.toString()
+                        }
+                    ){
+                        it.showInfoWindow()
+
+                    }
+                }
+
+                if (requestLocationUpdate) {
+                    LocationPermissionsAndSettingDialogs(
+                        updateCurrentLocation = {
+                            requestLocationUpdate = false
+                            LocationUtils.requestLocationResultCallback(fusedLocationProviderClient) { locationResult ->
+
+                                locationResult.lastLocation?.let { location ->
+                                    currentLocation = location
+                                }
+
+                            }
+                        }
+                    )
+                }
+            }
+
+            Text(text = viewModel.gotLoc.value.toString())
+
 
             Box(
                 Modifier
@@ -59,7 +137,9 @@ fun CreateNew(viewModel: AppViewModel, navControllerMain: NavController) {
                                 }",
                                 "photoUrl" to if (FirebaseAuth.getInstance().currentUser?.photoUrl != null) Firebase.auth.currentUser?.photoUrl
                                 else "https://github.com/theistCat/theistCat.github.io/blob/main/icons8-no-image-50.png",
-                                "uid" to Firebase.auth.currentUser?.uid
+                                "uid" to Firebase.auth.currentUser?.uid,
+                                "lat" to viewModel.gotLoc.value.latitude,
+                                "lon" to viewModel.gotLoc.value.longitude,
                             )
 
                             db.collection("events").add(event)

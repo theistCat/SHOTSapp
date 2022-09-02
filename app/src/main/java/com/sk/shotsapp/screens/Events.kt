@@ -20,8 +20,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.google.android.gms.maps.model.CameraPosition
+import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.*
 import com.sk.shotsapp.AppViewModel
 import com.sk.shotsapp.R
 import com.sk.shotsapp.ui.theme.BarColor
@@ -50,6 +54,7 @@ fun Title(whichScreen: String) {
 fun EventCard(
     text: String,
     eventId: String,
+    location: LatLng,
     painter: String,
     viewModel: AppViewModel,
     deleteBtn: Boolean,
@@ -60,45 +65,64 @@ fun EventCard(
         Row(
             Modifier
                 .padding(16.dp)
+                .fillMaxWidth()
                 .clickable {
                     Toast
                         .makeText(context, text, Toast.LENGTH_SHORT)
                         .show()
                 }) {
-            Image(
-                painter = rememberAsyncImagePainter(model = painter),
-                contentScale = ContentScale.Crop,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape)                       // clip to the circle shape
-                    .border(2.dp, Color.Gray, CircleShape),
-            )
+            Column {
+                Image(
+                    painter = rememberAsyncImagePainter(model = painter),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)                       // clip to the circle shape
+                        .border(2.dp, Color.Gray, CircleShape),
+                )
+
+                if (deleteBtn) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_delete),
+                        contentDescription = "",
+                        tint = BarColor,
+                        modifier = Modifier.clickable {
+                            viewModel.db.collection("events").document(eventId).delete()
+                                .addOnSuccessListener {
+                                    Log.w(TAG, "Document successfully deleted.")
+                                }.addOnFailureListener { exception ->
+                                    Log.w(TAG, "Error deleting document.", exception)
+                                }
+                            navController.navigate("home")
+                        }.padding(8.dp).size(50.dp)
+                    )
+                }
+            }
 
             Spacer(Modifier.width(8.dp))
 
-            Text(
-                text = text,
-                style = MaterialTheme.typography.subtitle2,
-                modifier = Modifier
-                    .weight(1f)
-                    .align(Alignment.CenterVertically)
-            )
+            Column {
+                Text(
+                    text = text,
+                    style = MaterialTheme.typography.subtitle2,
+                    fontSize = 18.sp
+                )
+                val cameraPositionState = rememberCameraPositionState()
+                cameraPositionState.position = CameraPosition.fromLatLngZoom(
+                    LatLng(location.latitude, location.longitude), 12f
+                )
 
-            if (deleteBtn) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_delete),
-                    contentDescription = "",
-                    tint = BarColor,
-                    modifier = Modifier.clickable {
-                        viewModel.db.collection("events").document(eventId).delete()
-                            .addOnSuccessListener {
-                                Log.w(TAG, "Document successfully deleted.")
-                            }.addOnFailureListener { exception ->
-                                Log.w(TAG, "Error deleting document.", exception)
-                            }
-                        navController.navigate("home")
-                    })
+                GoogleMap(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp),
+                    cameraPositionState = cameraPositionState,
+                    uiSettings = MapUiSettings(scrollGesturesEnabled = false, zoomGesturesEnabled = false)
+                ) {
+                    Marker(state = MarkerState(LatLng(location.latitude, location.longitude)))
+                }
+
             }
         }
     }
