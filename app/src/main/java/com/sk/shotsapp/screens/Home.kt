@@ -1,5 +1,5 @@
 @file:OptIn(
-    ExperimentalMaterialApi::class, ExperimentalMaterialApi::class
+    ExperimentalMaterialApi::class
 )
 @file:Suppress("NAME_SHADOWING", "CAST_NEVER_SUCCEEDS")
 
