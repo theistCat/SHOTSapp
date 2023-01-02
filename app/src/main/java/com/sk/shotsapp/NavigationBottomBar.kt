@@ -60,7 +60,7 @@ fun NaviG(viewModel: AppViewModel = hiltViewModel(), fusedLocationProviderClient
     }) { innerPadding ->
         NavHost(
             navController = navControllerMain,
-            startDestination = if (viewModel.isLoggedIn.value) "profile" else "Login",
+            startDestination = if (viewModel.isLoggedIn.value) "home" else "Login",
             modifier = Modifier.padding(innerPadding)
         ) {
             composable("profile") { Profile(viewModel, navControllerMain) }

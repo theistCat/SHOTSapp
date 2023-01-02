@@ -1,5 +1,6 @@
 package com.sk.shotsapp.screens
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.widget.DatePicker
 import androidx.compose.foundation.clickable
@@ -26,6 +27,7 @@ import com.sk.shotsapp.ui.theme.BarColor
 import com.sk.shotsapp.ui.theme.MyTypography
 import java.util.*
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun ChangeAccountInfo(viewModel: AppViewModel = hiltViewModel(), navController: NavController) {
     viewModel.isBottomBarEnabled.value = false
